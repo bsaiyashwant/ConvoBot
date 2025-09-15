@@ -10,7 +10,7 @@ chat = model.start_chat()
 app = Flask(__name__)
 CORS(app)
 
-chat_sessions = {}  # session_id => [{"user": ..., "bot": ...}]
+chat_sessions = {}  # session_id
 
 @app.route("/chat", methods=["POST"])
 def chat_api():
@@ -35,3 +35,4 @@ def get_history():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
