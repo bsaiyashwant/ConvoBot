@@ -1,6 +1,6 @@
 import google.generativeai as genai
 
-genai.configure(api_key="AIzaSyCNpFeslIE1XTzi4hz9uGRke7w1T1NAeTo")
+genai.configure(api_key="(CONFIDENTIAL_API_KEY)")
 
 model = genai.GenerativeModel(model_name="models/gemini-1.5-flash")
 
@@ -17,3 +17,4 @@ while True:
         print("ConvoBot:", response.text)
     except Exception as e:
         print("Error:", e)
+
