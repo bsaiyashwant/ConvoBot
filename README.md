@@ -1,6 +1,8 @@
 # ConvoBot
 ConvoBot: Your AI Productivity Partner 🤖✨
-ConvoBot is a next-generation chatbot designed to be more than just a conversational tool—it's your personal AI productivity partner. Powered by advanced APIs, including the Gemini API and Wikipedia API, and trained on robust datasets like SQuAD, ConvoBot delivers fast, accurate, and context-aware responses across various domains, including education, healthcare, and customer support. At its current prototype stage, it offers a truly personalized and efficient user experience.
+ConvoBot is a next-generation chatbot designed to be more than just a conversational tool—it's your personal AI productivity partner. 
+
+Powered by advanced APIs, including the Gemini API and Wikipedia API, and trained on robust datasets like SQuAD, ConvoBot delivers fast, accurate, and context-aware responses across various domains, including education, healthcare, and customer support. At its current prototype stage, it offers a truly personalized and efficient user experience.
 
 What Makes ConvoBot Unique? 🚀
 ✅ One-click Chat Summarizer: Instantly condense long conversations into key takeaways.
