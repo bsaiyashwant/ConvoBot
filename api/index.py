@@ -2,6 +2,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.generativeai as genai
 import os
+from dotenv import load_dotenv
+load_dotenv()
+
 import traceback
 import json
 import firebase_admin
