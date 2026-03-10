@@ -7,6 +7,7 @@ import ChatPanel from "./ChatPanel";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import VerifyEmail from "./pages/VerifyEmail";
+import Team from "./pages/Team";
 import { auth } from "./firebaseClient";
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -166,7 +167,7 @@ function Chat({ user }) {
               </button>
             </div>
             <p style={{ textAlign: 'center', fontSize: '0.75rem', marginTop: '1rem', color: '#676767', letterSpacing: '0.3px' }}>
-              Made with ❤️ by team podmAAn
+              Made with ❤️ by team <button onClick={() => window.location.href = '/team'} style={{ background: 'none', border: 'none', color: '#4285f4', padding: 0, cursor: 'pointer', textDecoration: 'underline', fontSize: 'inherit' }}>podmAAn</button>
             </p>
           </div>
         </div>
@@ -197,6 +198,7 @@ function App() {
         <Route path="/login" element={!user ? <Login /> : <Navigate to="/chat" />} />
         <Route path="/signup" element={!user ? <Signup /> : <Navigate to="/chat" />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="/team" element={<Team />} />
         <Route
           path="/chat"
           element={
