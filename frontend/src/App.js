@@ -78,10 +78,17 @@ function Chat({ user }) {
       });
     } catch (e) {
       console.error("Backend Connection Error:", e);
+      let errorMessage = "ConvoBot is offline or busy. Please ensure the backend server is running.";
+
+      // If the backend sent a specific error message, show it
+      if (e.response && e.response.data && e.response.data.error) {
+        errorMessage = e.response.data.error;
+      }
+
       setChatSessions((prev) => {
         const sessionHistory = [...(prev[currentSession] || [])];
         if (sessionHistory.length > 0) {
-          sessionHistory[sessionHistory.length - 1].bot = "ConvoBot is offline or busy. Please ensure the backend server is running.";
+          sessionHistory[sessionHistory.length - 1].bot = errorMessage;
         }
         return { ...prev, [currentSession]: sessionHistory };
       });
