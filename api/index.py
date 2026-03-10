@@ -134,15 +134,25 @@ def chat_api():
 
         response = chat.send_message(user_prompt)
         
-        # Save updated history back to Firestore or fallback
-        save_chat_history(uid, session_id, chat.history)
+        # Save updated history (SAFE WRAPPER)
+        try:
+            save_chat_history(uid, session_id, chat.history)
+        except Exception as save_err:
+             print(f"Non-critical history save error: {save_err}")
+             # We don't crash the whole request if history save fails
 
         return jsonify({"reply": response.text})
 
     except Exception as e:
-        print(f"Error in chat_api: {str(e)}")
+        error_msg = str(e)
+        print(f"CRITICAL Error in chat_api: {error_msg}")
         traceback.print_exc()
-        return jsonify({"error": "Failed to connect to Gemini. Check your API Key and internet connection."}), 500
+        
+        # Provide a more specific error message if possible
+        if "API_KEY_INVALID" in error_msg:
+             return jsonify({"error": "Invalid Google API Key. Please check your Vercel environment variables."}), 500
+        
+        return jsonify({"error": f"Backend Error: {error_msg}"}), 500
 
 @app.route("/api/history", methods=["GET"])
 @app.route("/history", methods=["GET"])
