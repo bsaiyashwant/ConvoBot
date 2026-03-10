@@ -65,6 +65,16 @@ except Exception as e:
 
 print(f"Active Gemini Model: {active_model}")
 
+def serialize_history(history):
+    """Converts Gemini history objects into plain dictionaries for storage."""
+    serialized = []
+    for content in history:
+        serialized.append({
+            "role": content.role,
+            "parts": [part.text for part in content.parts if hasattr(part, 'text')]
+        })
+    return serialized
+
 def get_chat_history(uid, session_id):
     if not db or not uid:
         return fallback_sessions.get(session_id, [])
@@ -80,19 +90,22 @@ def get_chat_history(uid, session_id):
         return fallback_sessions.get(session_id, [])
 
 def save_chat_history(uid, session_id, history):
+    # Always serialize before saving
+    serialized = serialize_history(history)
+    
     if not db or not uid:
-        fallback_sessions[session_id] = history
+        fallback_sessions[session_id] = serialized
         return
     
     try:
         doc_ref = db.collection('users').document(uid).collection('chat_sessions').document(session_id)
         doc_ref.set({
-            'history': history,
+            'history': serialized,
             'updated_at': firestore.SERVER_TIMESTAMP
         }, merge=True)
     except Exception as e:
         print(f"Firestore write error: {e}")
-        fallback_sessions[session_id] = history
+        fallback_sessions[session_id] = serialized
 
 @app.route("/api/chat", methods=["POST"])
 @app.route("/chat", methods=["POST"])
