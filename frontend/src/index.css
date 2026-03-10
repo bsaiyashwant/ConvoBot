@@ -30,22 +30,26 @@ body {
 
 /* Sidebar Logo Positioning */
 .logo-sidebar-container {
-  padding: 2rem 1.5rem 1rem 1.5rem;
+  padding: 1.5rem 1.5rem 1rem 1.5rem;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  width: 100%;
 }
 
 .sidebar-logo-img {
-  height: 100px !important;
-  width: auto;
+  width: 100%;
+  max-width: 240px;
+  height: auto;
   display: block;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.1));
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.15));
   transition: transform 0.3s ease;
 }
 
 .sidebar-logo-img:hover {
-  transform: scale(1.05);
+  transform: scale(1.03);
 }
 
 /* ChatGPT Style Sidebar - Unified & Refined */
@@ -63,21 +67,7 @@ body {
   padding: 0;
 }
 
-.logo-sidebar-container {
-  padding: 2rem 1rem 1.5rem 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
 
-.sidebar-logo-img {
-  height: 80px;
-  /* Big and visible */
-  width: auto;
-  display: block;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.15));
-}
 
 .new-chat-container {
   padding: 1rem 0.75rem;
@@ -562,12 +552,7 @@ body {
   color: #ececec;
 }
 
-.sidebar-logo-img {
-  height: 180px;
-  /* Big and visible as requested */
-  width: auto;
-  display: block;
-}
+
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
