@@ -95,6 +95,7 @@ def save_chat_history(uid, session_id, history):
         fallback_sessions[session_id] = history
 
 @app.route("/api/chat", methods=["POST"])
+@app.route("/chat", methods=["POST"])
 def chat_api():
     try:
         data = request.json
@@ -131,9 +132,12 @@ def chat_api():
         return jsonify({"error": "Failed to connect to Gemini. Check your API Key and internet connection."}), 500
 
 @app.route("/api/history", methods=["GET"])
+@app.route("/history", methods=["GET"])
 def get_history():
-    return jsonify(chat_sessions)
+    return jsonify(fallback_sessions)
 
+@app.route("/api/health", methods=["GET"])
+@app.route("/health", methods=["GET"])
 @app.route("/", methods=["GET"])
 def health_check():
     return jsonify({"status": "ok", "message": "ConvoBot API is running"})
