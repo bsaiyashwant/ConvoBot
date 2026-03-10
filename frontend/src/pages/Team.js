@@ -4,21 +4,24 @@ import './Team.css';
 
 const teamMembers = [
     {
-        name: "Balivada Sai Yashwant",
-        role: "Backend Developer & Debugger",
-        linkedin: "https://www.linkedin.com/in/balivadasaiyashwant/",
-        angle: 0
-    },
-    {
         name: "Perali Sri Harshavardhan",
         role: "Front End Developer & Tester",
         linkedin: "https://www.linkedin.com/in/perali-sri-harsha-vardhan-3a8541325/",
-        angle: 120
+        image: "/harsha_photo.png", // We'll need to save the images
+        angle: 0
     },
     {
         name: "Ritesh Devineni",
         role: "Front End Developer & Debugger",
         linkedin: "https://www.linkedin.com/in/ritesh-devineni-aba96b286/",
+        image: "/ritesh_photo.png",
+        angle: 120
+    },
+    {
+        name: "Balivada Sai Yashwant",
+        role: "Backend Developer & Debugger",
+        linkedin: "https://www.linkedin.com/in/balivadasaiyashwant/",
+        image: "/yashwant_photo.png",
         angle: 240
     }
 ];
@@ -28,11 +31,6 @@ function Team() {
     const navigate = useNavigate();
 
     const handleMemberClick = (memberAngle) => {
-        // Current rotation might be something like -720
-        // We want to rotate to a target that makes memberAngle face front (0)
-        // Target net field rotation is -memberAngle
-
-        // Simple logic: just set it. For more advanced "shortest path", we'd do math.
         setRotation(-memberAngle);
     };
 
@@ -52,12 +50,10 @@ function Team() {
             </div>
 
             <div className="orbit-container">
-                {/* The "Earth" Center - ignore clicks so it doesn't block cards */}
                 <div className="earth-concept" style={{ pointerEvents: 'none' }}>
                     <div className="earth-glow"></div>
                 </div>
 
-                {/* Orbiting Members */}
                 <div className="orbit-field" style={{ transform: `rotateY(${rotation}deg)` }}>
                     {teamMembers.map((member, index) => (
                         <div
@@ -76,12 +72,11 @@ function Team() {
                                 }}
                                 style={{
                                     transform: `rotateY(${-member.angle - rotation}deg)`,
-                                    zIndex: Math.round(Math.cos((member.angle + rotation) * Math.PI / 180) * 100)
                                 }}
                             >
                                 <div className="card-glass-content">
-                                    <div className="avatar-placeholder">
-                                        {member.name.charAt(0)}
+                                    <div className="avatar-wrapper">
+                                        <img src={member.image} alt={member.name} className="team-avatar-img" />
                                     </div>
                                     <h3>{member.name}</h3>
                                     <p>{member.role}</p>
