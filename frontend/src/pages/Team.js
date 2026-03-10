@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Team.css';
 
@@ -7,48 +7,24 @@ const teamMembers = [
         name: "Perali Sri Harshavardhan",
         role: "Front End Developer & Tester",
         linkedin: "https://www.linkedin.com/in/perali-sri-harsha-vardhan-3a8541325/",
-        image: "/harsha_photo.png",
-        angle: 0
+        image: "/harsha_photo.png"
     },
     {
         name: "Ritesh Devineni",
         role: "Front End Developer & Debugger",
         linkedin: "https://www.linkedin.com/in/ritesh-devineni-aba96b286/",
-        image: "/ritesh_photo.png",
-        angle: 120
+        image: "/ritesh_photo.png"
     },
     {
         name: "Balivada Sai Yashwant",
         role: "Backend Developer & Debugger",
         linkedin: "https://www.linkedin.com/in/balivadasaiyashwant/",
-        image: "/yashwant_photo.png",
-        angle: 240
+        image: "/yashwant_photo.png"
     }
 ];
 
 function Team() {
-    const [rotation, setRotation] = useState(0);
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth <= 768);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    const handleMemberClick = (memberAngle) => {
-        // Shortest path rotation
-        const targetRotation = -memberAngle;
-        let diff = (targetRotation - (rotation % 360)) % 360;
-        if (diff > 180) diff -= 360;
-        if (diff < -180) diff += 360;
-        setRotation(rotation + diff);
-    };
-
-    const radiusX = isMobile ? 110 : 380; // Spread horizontally
-    const radiusZ = isMobile ? 120 : 350; // Spread front-to-back
-    const scaleMultiplier = isMobile ? 0.8 : 1;
 
     return (
         <div className="team-page-container">
@@ -65,63 +41,28 @@ function Team() {
                 <p>The minds behind ConvoBot</p>
             </div>
 
-            <div className="orbit-container">
-                {/* The "Earth" Center - ignore clicks */}
-                <div className="earth-concept" style={{ pointerEvents: 'none' }}>
-                    <div className="earth-glow"></div>
-                </div>
-
-                {/* Orbiting Members */}
-                <div className="orbit-field">
-                    {teamMembers.map((member, index) => {
-                        const currentAngle = member.angle + rotation;
-                        const rad = currentAngle * Math.PI / 180;
-
-                        // Calculate 2.5D position coordinates
-                        const x = Math.sin(rad) * radiusX;
-                        const z = Math.cos(rad) * radiusZ;
-
-                        // Front cards get highest Z-index
-                        const zIndex = Math.round(z);
-
-                        return (
-                            <div
-                                key={index}
-                                className="member-positioner"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleMemberClick(member.angle);
-                                }}
-                                style={{
-                                    position: 'absolute',
-                                    transform: `translateX(${x}px) translateZ(${z}px) scale(${scaleMultiplier})`,
-                                    zIndex: zIndex,
-                                    opacity: z < 0 ? 0.5 : 1, // Dim back cards for depth
-                                    transition: 'transform 1s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s, z-index 1s'
-                                }}
-                            >
-                                <div className="member-card-3d">
-                                    <div className="card-glass-content">
-                                        <div className="avatar-wrapper">
-                                            <img src={member.image} alt={member.name} className="team-avatar-img" />
-                                        </div>
-                                        <h3>{member.name}</h3>
-                                        <p>{member.role}</p>
-                                        <a
-                                            href={member.linkedin}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="linkedin-link-team"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            View LinkedIn
-                                        </a>
-                                    </div>
-                                </div>
+            <div className="team-grid-container">
+                {teamMembers.map((member, index) => (
+                    <div key={index} className="team-member-card">
+                        <div className="card-glass-content">
+                            <div className="avatar-wrapper">
+                                <img src={member.image} alt={member.name} className="team-avatar-img" />
                             </div>
-                        );
-                    })}
-                </div>
+                            <h3>{member.name}</h3>
+                            <p>{member.role}</p>
+                            <a
+                                href={member.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="linkedin-link-team"
+                            >
+                                View LinkedIn
+                            </a>
+                        </div>
+                        {/* Decorative background glow */}
+                        <div className="card-glow"></div>
+                    </div>
+                ))}
             </div>
         </div>
     );
