@@ -197,6 +197,11 @@ body {
 }
 
 /* Main Content Adjustments */
+/* Hide mobile header on desktop by default */
+.mobile-header {
+  display: none;
+}
+
 .main-content {
   flex: 1;
   display: flex;
@@ -688,9 +693,4 @@ body {
     width: 30px;
     height: 30px;
   }
-}
-
-/* Hide mobile header on desktop */
-.mobile-header {
-  display: none;
 }

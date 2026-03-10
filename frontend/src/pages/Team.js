@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Team.css';
 
@@ -28,7 +28,14 @@ const teamMembers = [
 
 function Team() {
     const [rotation, setRotation] = useState(0);
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const handleMemberClick = (memberAngle) => {
         // Shortest path rotation
@@ -38,6 +45,10 @@ function Team() {
         if (diff < -180) diff += 360;
         setRotation(rotation + diff);
     };
+
+    const radiusX = isMobile ? 110 : 380; // Spread horizontally
+    const radiusZ = isMobile ? 120 : 350; // Spread front-to-back
+    const scaleMultiplier = isMobile ? 0.8 : 1;
 
     return (
         <div className="team-page-container">
@@ -61,36 +72,35 @@ function Team() {
                 </div>
 
                 {/* Orbiting Members */}
-                <div className="orbit-field" style={{ transform: `rotateY(${rotation}deg)` }}>
+                <div className="orbit-field">
                     {teamMembers.map((member, index) => {
-                        // Calculate relative angle to find who is in front
-                        const relativeAngle = (member.angle + rotation) % 360;
-                        const normalizedAngle = relativeAngle < 0 ? relativeAngle + 360 : relativeAngle;
+                        const currentAngle = member.angle + rotation;
+                        const rad = currentAngle * Math.PI / 180;
 
-                        // Cards near 0 or 360 are "in front"
-                        // We use cosine to distribute z-index (1 is front, -1 is back)
-                        const zIndex = Math.round(Math.cos(normalizedAngle * Math.PI / 180) * 100);
+                        // Calculate 2.5D position coordinates
+                        const x = Math.sin(rad) * radiusX;
+                        const z = Math.cos(rad) * radiusZ;
+
+                        // Front cards get highest Z-index
+                        const zIndex = Math.round(z);
 
                         return (
                             <div
                                 key={index}
-                                className="member-orbital-path"
+                                className="member-positioner"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleMemberClick(member.angle);
+                                }}
                                 style={{
-                                    transform: `rotateY(${member.angle}deg) translateZ(400px)`,
-                                    '--member-angle': `${member.angle}deg`,
-                                    zIndex: zIndex
+                                    position: 'absolute',
+                                    transform: `translateX(${x}px) translateZ(${z}px) scale(${scaleMultiplier})`,
+                                    zIndex: zIndex,
+                                    opacity: z < 0 ? 0.5 : 1, // Dim back cards for depth
+                                    transition: 'transform 1s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 1s, z-index 1s'
                                 }}
                             >
-                                <div
-                                    className="member-card-3d"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleMemberClick(member.angle);
-                                    }}
-                                    style={{
-                                        transform: `rotateY(${-member.angle - rotation}deg)`,
-                                    }}
-                                >
+                                <div className="member-card-3d">
                                     <div className="card-glass-content">
                                         <div className="avatar-wrapper">
                                             <img src={member.image} alt={member.name} className="team-avatar-img" />
