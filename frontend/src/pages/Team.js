@@ -12,7 +12,7 @@ const teamMembers = [
     },
     {
         name: "Balivada Sai Yashwant",
-        role: "Team Lead & Backend Developer",
+        role: "Backend Developer & Debugger",
         linkedin: "https://www.linkedin.com/in/balivadasaiyashwant/",
         image: "/yashwant_photo.png",
         isLead: true
