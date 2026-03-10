@@ -20,7 +20,7 @@
     },
     {
       "source": "/((?!.*\\.[a-zA-Z0-9]+$).*)",
-      "destination": "/frontend/index.html"
+      "destination": "/index.html"
     }
   ]
 }
