@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import axios from "axios";
-import html2pdf from "html2pdf.js";
 import { v4 as uuidv4 } from "uuid";
 import Sidebar from "./Sidebar";
 import ChatPanel from "./ChatPanel";
