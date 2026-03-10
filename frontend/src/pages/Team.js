@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Team.css'; // We'll create this or use index.css
+import './Team.css';
 
 const teamMembers = [
     {
@@ -27,9 +27,13 @@ function Team() {
     const [rotation, setRotation] = useState(0);
     const navigate = useNavigate();
 
-    const handleMemberClick = (angle) => {
-        // Calculate shortest rotation
-        setRotation(-angle);
+    const handleMemberClick = (memberAngle) => {
+        // Current rotation might be something like -720
+        // We want to rotate to a target that makes memberAngle face front (0)
+        // Target net field rotation is -memberAngle
+
+        // Simple logic: just set it. For more advanced "shortest path", we'd do math.
+        setRotation(-memberAngle);
     };
 
     return (
@@ -48,8 +52,8 @@ function Team() {
             </div>
 
             <div className="orbit-container">
-                {/* The "Earth" Center */}
-                <div className="earth-concept">
+                {/* The "Earth" Center - ignore clicks so it doesn't block cards */}
+                <div className="earth-concept" style={{ pointerEvents: 'none' }}>
                     <div className="earth-glow"></div>
                 </div>
 
@@ -59,12 +63,21 @@ function Team() {
                         <div
                             key={index}
                             className="member-orbital-path"
-                            style={{ transform: `rotateY(${member.angle}deg) translateZ(300px)` }}
+                            style={{
+                                transform: `rotateY(${member.angle}deg) translateZ(350px)`,
+                                '--member-angle': `${member.angle}deg`
+                            }}
                         >
                             <div
                                 className="member-card-3d"
-                                onClick={() => handleMemberClick(member.angle)}
-                                style={{ transform: `rotateY(${-member.angle - rotation}deg)` }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleMemberClick(member.angle);
+                                }}
+                                style={{
+                                    transform: `rotateY(${-member.angle - rotation}deg)`,
+                                    zIndex: Math.round(Math.cos((member.angle + rotation) * Math.PI / 180) * 100)
+                                }}
                             >
                                 <div className="card-glass-content">
                                     <div className="avatar-placeholder">

@@ -204,7 +204,7 @@
     }
 
     .member-orbital-path {
-        transform: rotateY(var(--angle)) translateZ(220px) !important;
+        transform: rotateY(var(--member-angle)) translateZ(240px) !important;
     }
 
     /* Override the dynamic angles for mobile to reduce radius */
