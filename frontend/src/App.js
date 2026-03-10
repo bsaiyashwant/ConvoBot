@@ -21,6 +21,10 @@ function Chat({ user }) {
   const [isTyping, setIsTyping] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
+  // Advanced Features State
+  const [activeLanguage, setActiveLanguage] = useState("English");
+  const [studyMode, setStudyMode] = useState(false);
+
   const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen);
 
   useEffect(() => {
@@ -44,12 +48,13 @@ function Chat({ user }) {
     setCurrentSession(id);
   };
 
-  const sendMessage = async (presetMessage) => {
+  const sendMessage = async (presetMessage, isHiddenPrompt = false, displayMessageOverride = null) => {
     const textToSend = typeof presetMessage === "string" ? presetMessage : input;
     if (!textToSend.trim() || isTyping) return;
 
-    const userPrompt = textToSend;
-    const userMsg = { user: userPrompt, bot: "..." };
+    // The text shown in the UI
+    const displayUserText = displayMessageOverride || textToSend;
+    const userMsg = { user: displayUserText, bot: "..." };
 
     setChatSessions((prev) => ({
       ...prev,
@@ -59,10 +64,21 @@ function Chat({ user }) {
     setIsTyping(true);
 
     try {
+      // Prompt Engineering: Stealthily modify payload
+      let finalPayloadText = textToSend;
+
+      if (!isHiddenPrompt && studyMode) {
+        finalPayloadText += "\n\n[System Instruction: Provide instant, tailored feedback on my input to boost my learning, along with your normal response.]";
+      }
+
+      if (!isHiddenPrompt && activeLanguage !== "English") {
+        finalPayloadText += `\n\n[System Instruction: Please ensure your entire reply is translated into ${activeLanguage}.]`;
+      }
+
       // Use proxy for local dev, direct for Vercel
       const apiUrl = process.env.NODE_ENV === "production" ? "/api/chat" : "http://127.0.0.1:5000/api/chat";
       const res = await axios.post(apiUrl, {
-        prompt: userPrompt,
+        prompt: finalPayloadText,
         session_id: currentSession,
         uid: user.uid,
       });
@@ -121,11 +137,36 @@ function Chat({ user }) {
           <div style={{ width: '24px' }}></div> {/* Spacer */}
         </div>
 
-        {/* Logo Header (Desktop) */}
+        {/* Logo Header (Desktop) & Advanced Controls */}
         <header className="logo-header">
           <div className="flex-row gap-2" style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
             <span style={{ fontSize: '1.1rem', fontWeight: '600', color: '#ececec', letterSpacing: '0.5px' }}>ConvoBot</span>
             <span className="text-sub font-medium" style={{ fontSize: '0.8rem', opacity: 0.5, marginLeft: '0.5rem' }}>v1.0.1</span>
+          </div>
+
+          <div className="advanced-controls-header">
+            {/* Language Dropdown */}
+            <select
+              className="lang-select"
+              value={activeLanguage}
+              onChange={(e) => setActiveLanguage(e.target.value)}
+              title="Select Language"
+            >
+              <option value="English">🇬🇧 EN</option>
+              <option value="Hindi">🇮🇳 HI</option>
+              <option value="Telugu">🇮🇳 TE</option>
+            </select>
+
+            {/* Study Mode Toggle */}
+            <label className="study-mode-toggle" title="Instant Feedback & Learning Mode">
+              <input
+                type="checkbox"
+                checked={studyMode}
+                onChange={() => setStudyMode(!studyMode)}
+              />
+              <span className="slider round"></span>
+              <span className="toggle-label">Study Mode</span>
+            </label>
           </div>
         </header>
 
@@ -135,6 +176,11 @@ function Chat({ user }) {
             messages={chatSessions[currentSession] || []}
             isTyping={isTyping}
             onSuggestionClick={sendMessage}
+            onSummarize={() => sendMessage(
+              "Please provide a concise summary of our conversation so far, highlighting the key takeaways and main points.",
+              false,
+              "Summarize our conversation so far."
+            )}
           />
         </div>
 

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-function ChatPanel({ messages, isTyping, onSuggestionClick }) {
+function ChatPanel({ messages, isTyping, onSuggestionClick, onSummarize }) {
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -36,63 +36,81 @@ function ChatPanel({ messages, isTyping, onSuggestionClick }) {
           </div>
         </div>
       ) : (
-        messages.map((msg, i) => (
-          <div key={i} className="message-wrapper animate-in">
-            {/* User Message */}
-            <div className="user-message">
-              {msg.user}
-            </div>
-
-            {/* Bot Message */}
-            <div className="bot-message" style={{ marginTop: '2rem' }}>
-              <div className="bot-avatar-wrapper">
-                <div className="bot-avatar-circle">
-                  <img src="/bot_response_logo.png" alt="" className="bot-avatar-img" />
-                </div>
-                <span className="bot-name">ConvoBot</span>
+        <>
+          <div className="chat-actions-bar" style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', position: 'sticky', top: 0, zIndex: 5, padding: '10px 0', background: 'linear-gradient(#000 40%, transparent)' }}>
+            <button
+              className="suggestion-card"
+              onClick={onSummarize}
+              disabled={isTyping}
+              style={{ width: 'auto', padding: '0.6rem 1.2rem', display: 'flex', alignItems: 'center', gap: '8px', opacity: isTyping ? 0.5 : 1 }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="21" y1="10" x2="3" y2="10"></line>
+                <line x1="21" y1="6" x2="3" y2="6"></line>
+                <line x1="21" y1="14" x2="3" y2="14"></line>
+                <line x1="14" y1="18" x2="3" y2="18"></line>
+              </svg>
+              <h3 style={{ margin: 0 }}>Summarize Conversation</h3>
+            </button>
+          </div>
+          {messages.map((msg, i) => (
+            <div key={i} className="message-wrapper animate-in">
+              {/* User Message */}
+              <div className="user-message">
+                {msg.user}
               </div>
 
-              <div className="bot-content markdown-body">
-                {msg.bot === "..." ? (
-                  <div style={{ display: 'flex', gap: '6px', padding: '0.5rem 0' }}>
-                    <div className="typing-dot"></div>
-                    <div className="typing-dot" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="typing-dot" style={{ animationDelay: '0.4s' }}></div>
+              {/* Bot Message */}
+              <div className="bot-message" style={{ marginTop: '2rem' }}>
+                <div className="bot-avatar-wrapper">
+                  <div className="bot-avatar-circle">
+                    <img src="/bot_response_logo.png" alt="" className="bot-avatar-img" />
                   </div>
-                ) : msg.bot.includes("Sorry, I encountered an error") || msg.bot.includes("offline or busy") || msg.bot.includes("Error:") ? (
-                  <div className="error-bubble">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10"></circle>
-                      <line x1="12" y1="8" x2="12" y2="12"></line>
-                      <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                    </svg>
-                    <span>{msg.bot}</span>
+                  <span className="bot-name">ConvoBot</span>
+                </div>
+
+                <div className="bot-content markdown-body">
+                  {msg.bot === "..." ? (
+                    <div style={{ display: 'flex', gap: '6px', padding: '0.5rem 0' }}>
+                      <div className="typing-dot"></div>
+                      <div className="typing-dot" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="typing-dot" style={{ animationDelay: '0.4s' }}></div>
+                    </div>
+                  ) : msg.bot.includes("Sorry, I encountered an error") || msg.bot.includes("offline or busy") || msg.bot.includes("Error:") ? (
+                    <div className="error-bubble">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                      </svg>
+                      <span>{msg.bot}</span>
+                    </div>
+                  ) : (
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.bot}
+                    </ReactMarkdown>
+                  )}
+                </div>
+
+                {msg.bot !== "..." && !msg.bot.includes("error") && (
+                  <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem', opacity: 0.6 }}>
+                    <button className="icon-btn">👍</button>
+                    <button className="icon-btn">👎</button>
+                    <button
+                      className="icon-btn"
+                      onClick={(e) => {
+                        navigator.clipboard.writeText(msg.bot);
+                        const btn = e.target;
+                        btn.innerText = 'Copied!';
+                        setTimeout(() => btn.innerText = 'Copy', 2000);
+                      }}
+                      style={{ fontSize: '0.7rem', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', width: '56px' }}>Copy</button>
                   </div>
-                ) : (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {msg.bot}
-                  </ReactMarkdown>
                 )}
               </div>
-
-              {msg.bot !== "..." && !msg.bot.includes("error") && (
-                <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem', opacity: 0.6 }}>
-                  <button className="icon-btn">👍</button>
-                  <button className="icon-btn">👎</button>
-                  <button
-                    className="icon-btn"
-                    onClick={(e) => {
-                      navigator.clipboard.writeText(msg.bot);
-                      const btn = e.target;
-                      btn.innerText = 'Copied!';
-                      setTimeout(() => btn.innerText = 'Copy', 2000);
-                    }}
-                    style={{ fontSize: '0.7rem', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', width: '56px' }}>Copy</button>
-                </div>
-              )}
             </div>
-          </div>
-        ))
+          ))}
+        </>
       )}
       <div ref={scrollRef} style={{ height: '4rem' }} />
     </div>
