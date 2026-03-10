@@ -1,0 +1,20 @@
+node_modules/
+.env
+.env.local
+.env.development
+.env.production
+.DS_Store
+
+# Built files
+build/
+dist/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+env/
+
+# Firebase Credentials
+api/firebase_creds.json
+firebase_creds.json
