@@ -78,11 +78,17 @@ function Chat({ user }) {
       });
     } catch (e) {
       console.error("Backend Connection Error:", e);
-      let errorMessage = "ConvoBot is offline or busy. Please ensure the backend server is running.";
+      let errorMessage = "ConvoBot is offline or busy. ";
 
-      // If the backend sent a specific error message, show it
-      if (e.response && e.response.data && e.response.data.error) {
-        errorMessage = e.response.data.error;
+      if (e.response) {
+        // The server responded with a status code
+        errorMessage += `(Server Error ${e.response.status}: ${e.response.data.error || e.message})`;
+      } else if (e.request) {
+        // The request was made but no response was received
+        errorMessage += "(No response from server. Check Vercel logs or internet.)";
+      } else {
+        // Something else happened
+        errorMessage += `(Request Error: ${e.message})`;
       }
 
       setChatSessions((prev) => {
