@@ -18,6 +18,9 @@ function Chat({ user }) {
   });
   const [currentSession, setCurrentSession] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen);
 
   useEffect(() => {
     if (Object.keys(chatSessions).length === 0) {
@@ -99,10 +102,25 @@ function Chat({ user }) {
         switchSession={switchSession}
         onNewChat={newChat}
         user={user}
+        isMobileOpen={isMobileOpen}
+        toggleMobileSidebar={toggleMobileSidebar}
       />
 
       <main className="main-content">
-        {/* Logo Header */}
+        {/* Mobile Header */}
+        <div className="mobile-header">
+          <button className="hamburger-btn" onClick={toggleMobileSidebar}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <img src="/convobot_logo_final.png" alt="ConvoBot" className="mobile-logo-img" />
+          <div style={{ width: '24px' }}></div> {/* Spacer */}
+        </div>
+
+        {/* Logo Header (Desktop) */}
         <header className="logo-header">
           <div className="flex-row gap-2" style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
             <span style={{ fontSize: '1.1rem', fontWeight: '600', color: '#ececec', letterSpacing: '0.5px' }}>ConvoBot</span>

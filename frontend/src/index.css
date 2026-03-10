@@ -563,3 +563,134 @@ body {
   width: auto;
   display: block;
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .chatgpt-sidebar {
+    position: fixed;
+    left: -280px;
+    top: 0;
+    bottom: 0;
+    z-index: 1000;
+    width: 280px;
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.5);
+    transition: left 0.3s ease;
+  }
+
+  .chatgpt-sidebar.mobile-open {
+    left: 0;
+  }
+
+  /* Mobile Backdrop */
+  .sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .sidebar-backdrop.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .main-content {
+    height: 100vh;
+  }
+
+  .mobile-header {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background-color: #171717;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    height: 60px;
+    width: 100%;
+    z-index: 100;
+  }
+
+  .hamburger-btn {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-logo-img {
+    height: 32px;
+    width: auto;
+  }
+
+  .logo-header,
+  .greeting-logo {
+    height: 100px;
+  }
+
+  .greeting-text {
+    font-size: 1.25rem;
+    padding: 0 1rem;
+  }
+
+  .suggestion-grid {
+    grid-template-columns: 1fr;
+    padding: 0 1rem;
+    gap: 0.75rem;
+  }
+
+  .input-container-gpt {
+    padding: 0 1rem;
+  }
+
+  .input-pill {
+    padding: 0.6rem 1rem;
+    border-radius: 1.25rem;
+  }
+
+  .input-brand-logo {
+    height: 28px;
+  }
+
+  .gpt-input {
+    font-size: 0.95rem;
+  }
+
+  .chat-history-container {
+    padding: 1rem 0.75rem 6rem 0.75rem;
+    gap: 1.5rem;
+  }
+
+  .user-message {
+    max-width: 85%;
+    font-size: 0.9rem;
+  }
+
+  .bot-message {
+    font-size: 0.95rem;
+  }
+
+  .bot-avatar-circle {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+/* Hide mobile header on desktop */
+.mobile-header {
+  display: none;
+}
