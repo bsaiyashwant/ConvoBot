@@ -7,19 +7,22 @@ const teamMembers = [
         name: "Perali Sri Harshavardhan",
         role: "Front End Developer & Tester",
         linkedin: "https://www.linkedin.com/in/perali-sri-harsha-vardhan-3a8541325/",
-        image: "/harsha_photo.png"
+        image: "/harsha_photo.png",
+        isLead: false
+    },
+    {
+        name: "Balivada Sai Yashwant",
+        role: "Team Lead & Backend Developer",
+        linkedin: "https://www.linkedin.com/in/balivadasaiyashwant/",
+        image: "/yashwant_photo.png",
+        isLead: true
     },
     {
         name: "Ritesh Devineni",
         role: "Front End Developer & Debugger",
         linkedin: "https://www.linkedin.com/in/ritesh-devineni-aba96b286/",
-        image: "/ritesh_photo.png"
-    },
-    {
-        name: "Balivada Sai Yashwant",
-        role: "Backend Developer & Debugger",
-        linkedin: "https://www.linkedin.com/in/balivadasaiyashwant/",
-        image: "/yashwant_photo.png"
+        image: "/ritesh_photo.png",
+        isLead: false
     }
 ];
 
@@ -43,7 +46,15 @@ function Team() {
 
             <div className="team-grid-container">
                 {teamMembers.map((member, index) => (
-                    <div key={index} className="team-member-card">
+                    <div key={index} className={`team-member-card ${member.isLead ? 'team-lead-card' : ''}`}>
+                        {member.isLead && (
+                            <div className="team-lead-badge">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path>
+                                </svg>
+                                LEAD
+                            </div>
+                        )}
                         <div className="card-glass-content">
                             <div className="avatar-wrapper">
                                 <img src={member.image} alt={member.name} className="team-avatar-img" />
