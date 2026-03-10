@@ -9,7 +9,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import VerifyEmail from "./pages/VerifyEmail";
 import { auth } from "./firebaseClient";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 function Chat({ user }) {
   const [input, setInput] = useState("");
@@ -86,19 +86,6 @@ function Chat({ user }) {
       setIsTyping(false);
     }
   };
-
-  const downloadPDF = () => {
-    const element = document.getElementById("chat-box");
-    const opt = {
-      margin: 1,
-      filename: `ConvoBot_Session_${currentSession.substring(0, 8)}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, backgroundColor: '#0f172a' },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-    };
-    html2pdf().set(opt).from(element).save();
-  };
-
   const newChat = () => {
     const id = uuidv4();
     setCurrentSession(id);
