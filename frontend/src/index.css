@@ -30,26 +30,24 @@ body {
 
 /* Sidebar Logo Positioning */
 .logo-sidebar-container {
-  padding: 1.5rem 1.5rem 1rem 1.5rem;
+  padding: 2.5rem 1rem 1.5rem 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  width: 100%;
 }
 
 .sidebar-logo-img {
-  width: 100%;
-  max-width: 240px;
+  width: 90%;
+  max-width: 200px;
   height: auto;
   display: block;
-  object-fit: contain;
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.15));
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15));
   transition: transform 0.3s ease;
 }
 
 .sidebar-logo-img:hover {
-  transform: scale(1.03);
+  transform: scale(1.05);
 }
 
 /* ChatGPT Style Sidebar - Unified & Refined */
@@ -66,7 +64,6 @@ body {
   transition: width 0.3s ease;
   padding: 0;
 }
-
 
 
 .new-chat-container {
@@ -201,113 +198,17 @@ body {
 }
 
 .logo-header {
-  height: 80px;
-  /* Increased from 60px */
+  height: 100px;
   display: flex;
   align-items: center;
   padding: 0 1.5rem;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .header-logo-img {
-  height: 50px;
+  height: 60px;
   width: auto;
 }
-
-/* Advanced Features UI */
-.advanced-controls-header {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-  z-index: 10;
-}
-
-.lang-select {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  appearance: none;
-  -webkit-appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 0.7rem center;
-  background-size: 1em;
-  padding-right: 2.2rem;
-}
-
-.lang-select:hover,
-.lang-select:focus {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-color: rgba(66, 133, 244, 0.5);
-}
-
-.lang-select option {
-  background: #171717;
-  color: white;
-}
-
-/* Study Mode Toggle Switch */
-.study-mode-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  cursor: pointer;
-  position: relative;
-}
-
-.study-mode-toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.study-mode-toggle .slider {
-  width: 44px;
-  height: 24px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 34px;
-  position: relative;
-  transition: .4s;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.study-mode-toggle .slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 2px;
-  background-color: #b4b4b4;
-  border-radius: 50%;
-  transition: .4s;
-}
-
-.study-mode-toggle input:checked+.slider {
-  background: linear-gradient(135deg, #4285f4, #c678dd);
-  border-color: transparent;
-}
-
-.study-mode-toggle input:checked+.slider:before {
-  transform: translateX(20px);
-  background-color: white;
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-.study-mode-toggle .toggle-label {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #ececec;
-  user-select: none;
-}
-
 
 /* Premium Chat Bubbles & Messaging */
 .chat-history-container {
@@ -409,10 +310,9 @@ body {
 }
 
 .greeting-logo {
-  height: 160px;
-  /* Increased from 120px */
+  height: 180px;
   margin-bottom: 2rem;
-  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.1));
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.15));
 }
 
 .greeting-text {
@@ -548,9 +448,7 @@ body {
 }
 
 .input-brand-logo {
-  height: 42px;
-  /* Increased from 32px */
-  /* Bigger and more visible */
+  height: 48px;
   width: auto;
   margin-right: 12px;
 }
@@ -648,7 +546,6 @@ body {
 }
 
 
-
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .app-container {
@@ -722,20 +619,9 @@ body {
     width: auto;
   }
 
-  .logo-header {
-    height: auto;
-    padding: 1rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
-
-  .advanced-controls-header {
-    width: 100%;
-    justify-content: space-between;
-  }
-
+  .logo-header,
   .greeting-logo {
-    height: 100px;
+    height: 120px;
   }
 
   .greeting-text {

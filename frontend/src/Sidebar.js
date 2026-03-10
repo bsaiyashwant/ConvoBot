@@ -18,24 +18,26 @@ function Sidebar({ chats, currentId, switchSession, onNewChat, user, isMobileOpe
 
       <div className={`chatgpt-sidebar ${isMobileOpen ? 'mobile-open' : ''}`}>
         {/* Brand Logo & Close Button (Mobile Only) */}
-        <div className="logo-sidebar-container" style={{ position: 'relative' }}>
+        <div className="logo-sidebar-container">
           <img src="/convobot_logo_final.png" alt="ConvoBot" className="sidebar-logo-img" />
 
-          <button
-            className="icon-btn close-sidebar-btn"
-            onClick={toggleMobileSidebar}
-            style={{
-              position: 'absolute',
-              right: '1rem',
-              top: '1.5rem',
-              display: window.innerWidth <= 768 ? 'flex' : 'none'
-            }}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
+          {isMobileOpen && (
+            <button
+              className="icon-btn close-sidebar-btn"
+              onClick={toggleMobileSidebar}
+              style={{
+                position: 'absolute',
+                right: '1rem',
+                top: '1.5rem',
+                display: 'flex'
+              }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
         </div>
 
         {/* New Chat Button */}
