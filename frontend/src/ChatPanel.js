@@ -45,7 +45,8 @@ function ChatPanel({ messages, isTyping, onSuggestionClick }) {
 
             {/* Bot Message */}
             <div className="bot-message" style={{ marginTop: '2rem' }}>
-              <div className="bot-avatar-wrapper">
+              <div className="bot-card">
+                <div className="bot-avatar-wrapper">
                 <div className="bot-avatar-circle">
                   <img src="/bot_response_logo.png" alt="" className="bot-avatar-img" />
                 </div>
