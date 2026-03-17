@@ -1,4 +1,4 @@
-# ConvoBot v1.0.1 🤖
+# ConvoBot 🤖
 
 ConvoBot is a premium, AI-powered study tool and chat assistant made by and for students. It features a clean, professional interface, persistent textbot through Firebase, and is powered by Google's Gemini 1.5 model.
 
@@ -13,5 +13,3 @@ Check out the live application here: [https://convobotai.vercel.app/](https://co
 - **Cross-Platform**: Fully responsive design that works on mobile and desktop.
 - **24/7 Availability**: Hosted on Vercel for constant up-time.
 
-
-**v1.0.2 - Under Development**
