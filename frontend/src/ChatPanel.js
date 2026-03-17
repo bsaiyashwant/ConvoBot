@@ -91,6 +91,8 @@ function ChatPanel({ messages, isTyping, onSuggestionClick }) {
                     style={{ fontSize: '0.7rem', border: '1px solid rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '4px', width: '56px' }}>Copy</button>
                 </div>
               )}
+                </div>
+              </div>
             </div>
           </div>
         ))
