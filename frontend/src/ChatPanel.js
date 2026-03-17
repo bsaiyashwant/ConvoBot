@@ -94,7 +94,6 @@ function ChatPanel({ messages, isTyping, onSuggestionClick }) {
                 </div>
               </div>
             </div>
-          </div>
         ))
       )}
       <div ref={scrollRef} style={{ height: '4rem' }} />
