@@ -28,9 +28,15 @@ const teamMembers = [
 
 function Team() {
     const navigate = useNavigate();
+    const [activeId, setActiveId] = React.useState(null);
+
+    const handleCardClick = (index) => {
+        setActiveId(activeId === index ? null : index);
+    };
 
     return (
-        <div className="team-page-container">
+        <div className={`team-page-container ${activeId !== null ? 'has-active' : ''}`}>
+            <div className="bg-blur-layer"></div>
             <button className="back-btn-team" onClick={() => navigate('/chat')}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -46,7 +52,11 @@ function Team() {
 
             <div className="team-grid-container">
                 {teamMembers.map((member, index) => (
-                    <div key={index} className={`team-member-card ${member.isLead ? 'team-lead-card' : ''}`}>
+                    <div 
+                        key={index} 
+                        className={`team-member-card ${member.isLead ? 'team-lead-card' : ''} ${activeId === index ? 'active' : ''} ${activeId !== null && activeId !== index ? 'blurred' : ''}`}
+                        onClick={() => handleCardClick(index)}
+                    >
                         {member.isLead && (
                             <div className="team-lead-badge">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
