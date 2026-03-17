@@ -130,11 +130,35 @@
 }
 
 .team-member-card.active {
-    transform: translateY(-20px) scale(1.1) rotate(360deg);
+    transform: translateY(-20px) scale(1.1) rotateY(360deg);
     z-index: 100 !important;
     background: rgba(42, 42, 58, 0.8);
     border-color: #FFD700;
     box-shadow: 0 30px 100px rgba(255, 215, 0, 0.2), 0 0 60px rgba(255, 215, 0, 0.1);
+}
+
+.card-close-btn {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.card-close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    transform: rotate(90deg);
 }
 
 .team-member-card.blurred {
