@@ -84,7 +84,7 @@ body {
 }
 
 .logo-sidebar-container {
-  padding: 2.5rem 1.5rem;
+  padding: 1.5rem 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -93,9 +93,9 @@ body {
 
 .sidebar-logo-img {
   width: 100%;
-  max-width: 140px;
+  max-width: 240px;
   height: auto;
-  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.2));
   transition: transform 0.3s ease;
 }
 
