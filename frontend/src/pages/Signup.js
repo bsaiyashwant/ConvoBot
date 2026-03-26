@@ -25,25 +25,40 @@ function Signup() {
             // 2. Update their display name
             await updateProfile(user, { displayName: name });
 
-            // 3. Save basic profile to Firestore
-            await setDoc(doc(db, 'users', user.uid), {
-                uid: user.uid,
-                name: name,
-                email: email,
-                createdAt: new Date().toISOString()
-            });
-
-            // 4. Send Email Verification
+            // 3. Send Email Verification IMMEDIATELY (before Firestore)
             await sendEmailVerification(user);
 
-            // 5. Sign them out immediately so they must verify
+            // 4. Try to save profile to Firestore (non-blocking for auth flow)
+            try {
+                await setDoc(doc(db, 'users', user.uid), {
+                    uid: user.uid,
+                    name: name,
+                    email: email,
+                    createdAt: new Date().toISOString()
+                });
+            } catch (firestoreErr) {
+                console.warn('Firestore profile save failed (non-critical):', firestoreErr.message);
+                // Don't block signup — user is created and verification email is sent
+            }
+
+            // 5. Sign them out so they must verify
             await auth.signOut();
 
             // 6. Redirect to verification page
             navigate('/verify-email');
 
         } catch (err) {
-            setError(err.message);
+            console.error('Signup error:', err.code, err.message);
+            // Show user-friendly error messages
+            if (err.code === 'auth/email-already-in-use') {
+                setError('This email is already registered. Try logging in instead.');
+            } else if (err.code === 'auth/weak-password') {
+                setError('Password must be at least 6 characters.');
+            } else if (err.code === 'auth/invalid-email') {
+                setError('Please enter a valid email address.');
+            } else {
+                setError(err.message);
+            }
         }
 
         setLoading(false);
@@ -56,13 +71,17 @@ function Signup() {
             const result = await signInWithPopup(auth, googleProvider);
             const user = result.user;
 
-            // Save basic profile to Firestore. Use merge:true so we don't overwrite if they exist.
-            await setDoc(doc(db, 'users', user.uid), {
-                uid: user.uid,
-                name: user.displayName,
-                email: user.email,
-                createdAt: user.metadata.creationTime
-            }, { merge: true });
+            // Save basic profile to Firestore
+            try {
+                await setDoc(doc(db, 'users', user.uid), {
+                    uid: user.uid,
+                    name: user.displayName,
+                    email: user.email,
+                    createdAt: user.metadata.creationTime
+                }, { merge: true });
+            } catch (firestoreErr) {
+                console.warn('Firestore profile save failed:', firestoreErr.message);
+            }
 
             navigate('/chat');
         } catch (err) {
@@ -75,7 +94,7 @@ function Signup() {
 
     return (
         <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="suggestion-card" style={{ maxWidth: '400px', width: '100%', margin: '0 1rem', padding: '2rem' }}>
+            <div className="auth-card">
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <img src="/convobot_logo_final.png" alt="ConvoBot" style={{ height: '60px', marginBottom: '1rem' }} />
                     <h2 style={{ color: '#ececec', fontSize: '1.5rem', fontWeight: '600' }}>Create an Account</h2>
@@ -86,57 +105,40 @@ function Signup() {
 
                 <form onSubmit={handleSignup} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div>
-                        <label style={{ display: 'block', color: '#ececec', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Full Name</label>
+                        <label className="auth-label">Full Name</label>
                         <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="gpt-input"
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px' }}
+                            className="auth-input"
                             placeholder="John Doe"
                             required
                         />
                     </div>
                     <div>
-                        <label style={{ display: 'block', color: '#ececec', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Email Address</label>
+                        <label className="auth-label">Email Address</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="gpt-input"
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px' }}
+                            className="auth-input"
                             placeholder="you@example.com"
                             required
                         />
                     </div>
                     <div>
-                        <label style={{ display: 'block', color: '#ececec', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Password</label>
+                        <label className="auth-label">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="gpt-input"
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px' }}
+                            className="auth-input"
                             placeholder="••••••••"
                             minLength={6}
                             required
                         />
                     </div>
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        style={{
-                            marginTop: '1rem',
-                            padding: '0.85rem',
-                            background: '#ececec',
-                            color: '#0f172a',
-                            borderRadius: '8px',
-                            fontWeight: '600',
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            border: 'none',
-                            transition: 'opacity 0.2s'
-                        }}
-                    >
+                    <button type="submit" disabled={loading} className="auth-btn-primary">
                         {loading ? 'Creating Account...' : 'Continue'}
                     </button>
                 </form>
@@ -147,27 +149,7 @@ function Signup() {
                     <div style={{ flex: 1, height: '1px', background: '#333' }}></div>
                 </div>
 
-                <button
-                    onClick={handleGoogleSignup}
-                    disabled={loading}
-                    style={{
-                        width: '100%',
-                        padding: '0.85rem',
-                        background: 'transparent',
-                        color: '#ececec',
-                        borderRadius: '8px',
-                        fontWeight: '600',
-                        cursor: loading ? 'not-allowed' : 'pointer',
-                        border: '1px solid #444',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.75rem',
-                        transition: 'background 0.2s'
-                    }}
-                    onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                    onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                >
+                <button onClick={handleGoogleSignup} disabled={loading} className="auth-btn-google">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />

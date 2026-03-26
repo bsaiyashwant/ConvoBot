@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { auth, googleProvider } from '../firebaseClient';
-import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, sendEmailVerification } from 'firebase/auth';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Login() {
@@ -8,24 +8,58 @@ function Login() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showResend, setShowResend] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setShowResend(false);
 
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
             // Check if email is verified
             if (!userCredential.user.emailVerified) {
-                setError('Please verify your email address before logging in.');
+                setError('Please verify your email address before logging in. Check your inbox (and spam folder).');
+                setShowResend(true);
                 await auth.signOut();
             } else {
                 navigate('/chat');
             }
         } catch (err) {
-            setError(err.message);
+            console.error('Login error:', err.code, err.message);
+            if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+                setError('Invalid email or password. Please try again.');
+            } else if (err.code === 'auth/wrong-password') {
+                setError('Incorrect password. Please try again.');
+            } else if (err.code === 'auth/too-many-requests') {
+                setError('Too many failed attempts. Please wait a moment and try again.');
+            } else {
+                setError(err.message);
+            }
+        }
+        setLoading(false);
+    };
+
+    const handleResendVerification = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            // Sign in temporarily to get the user object
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            await sendEmailVerification(userCredential.user);
+            await auth.signOut();
+            setError('Verification email sent! Check your inbox (and spam folder).');
+            setShowResend(false);
+        } catch (err) {
+            console.error('Resend error:', err.code, err.message);
+            if (err.code === 'auth/too-many-requests') {
+                setError('Too many requests. Please wait a few minutes before trying again.');
+            } else {
+                setError('Failed to resend: ' + err.message);
+            }
         }
         setLoading(false);
     };
@@ -46,55 +80,49 @@ function Login() {
 
     return (
         <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="suggestion-card" style={{ maxWidth: '400px', width: '100%', margin: '0 1rem', padding: '2rem' }}>
+            <div className="auth-card">
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <img src="/convobot_logo_final.png" alt="ConvoBot" style={{ height: '60px', marginBottom: '1rem' }} />
                     <h2 style={{ color: '#ececec', fontSize: '1.5rem', fontWeight: '600' }}>Welcome Back</h2>
                     <p style={{ color: '#aaa', fontSize: '0.9rem', marginTop: '0.5rem' }}>Sign in to continue to ConvoBot</p>
                 </div>
 
-                {error && <div className="error-bubble" style={{ marginBottom: '1.5rem' }}>{error}</div>}
+                {error && (
+                    <div className="error-bubble" style={{ marginBottom: '1.5rem' }}>
+                        {error}
+                    </div>
+                )}
+
+                {showResend && (
+                    <button onClick={handleResendVerification} disabled={loading} className="auth-btn-resend">
+                        📩 Resend Verification Email
+                    </button>
+                )}
 
                 <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div>
-                        <label style={{ display: 'block', color: '#ececec', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Email Address</label>
+                        <label className="auth-label">Email Address</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="gpt-input"
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px' }}
+                            className="auth-input"
                             placeholder="you@example.com"
                             required
                         />
                     </div>
                     <div>
-                        <label style={{ display: 'block', color: '#ececec', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Password</label>
+                        <label className="auth-label">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="gpt-input"
-                            style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px' }}
+                            className="auth-input"
                             placeholder="••••••••"
                             required
                         />
                     </div>
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        style={{
-                            marginTop: '1rem',
-                            padding: '0.85rem',
-                            background: '#ececec',
-                            color: '#0f172a',
-                            borderRadius: '8px',
-                            fontWeight: '600',
-                            cursor: loading ? 'not-allowed' : 'pointer',
-                            border: 'none',
-                            transition: 'opacity 0.2s'
-                        }}
-                    >
+                    <button type="submit" disabled={loading} className="auth-btn-primary">
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
                 </form>
@@ -105,27 +133,7 @@ function Login() {
                     <div style={{ flex: 1, height: '1px', background: '#333' }}></div>
                 </div>
 
-                <button
-                    onClick={handleGoogleLogin}
-                    disabled={loading}
-                    style={{
-                        width: '100%',
-                        padding: '0.85rem',
-                        background: 'transparent',
-                        color: '#ececec',
-                        borderRadius: '8px',
-                        fontWeight: '600',
-                        cursor: loading ? 'not-allowed' : 'pointer',
-                        border: '1px solid #444',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.75rem',
-                        transition: 'background 0.2s'
-                    }}
-                    onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
-                    onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
-                >
+                <button onClick={handleGoogleLogin} disabled={loading} className="auth-btn-google">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
