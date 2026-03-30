@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.generativeai as genai
+import requests as http_requests
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -65,6 +66,85 @@ except Exception as e:
 
 print(f"Active Gemini Model: {active_model}")
 
+# ============================================
+# MULTI-MODEL: Grok (xAI) + Groq Providers
+# ============================================
+GROK_API_KEY = os.getenv("GROK_API_KEY")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+def convert_history_to_openai(gemini_history):
+    """Convert Gemini-style history [{role, parts}] to OpenAI-style [{role, content}]."""
+    messages = []
+    for entry in gemini_history:
+        role = entry.get("role", "user")
+        if role == "model":
+            role = "assistant"
+        parts = entry.get("parts", [])
+        content = parts[0] if parts else ""
+        if isinstance(content, dict):
+            content = content.get("text", "")
+        messages.append({"role": role, "content": str(content)})
+    return messages
+
+def chat_grok(prompt, history):
+    """Send a chat request to xAI Grok API."""
+    if not GROK_API_KEY:
+        return "Error: Grok API key not configured. Please add GROK_API_KEY to your environment."
+    
+    headers = {
+        "Authorization": f"Bearer {GROK_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    messages = convert_history_to_openai(history) + [{"role": "user", "content": prompt}]
+    
+    resp = http_requests.post(
+        "https://api.x.ai/v1/chat/completions",
+        headers=headers,
+        json={"model": "grok-3-mini", "messages": messages},
+        timeout=60
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def chat_groq(prompt, history):
+    """Send a chat request to Groq API (fast open-source models)."""
+    if not GROQ_API_KEY:
+        return "Error: Groq API key not configured. Please add GROQ_API_KEY to your environment."
+    
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    messages = convert_history_to_openai(history) + [{"role": "user", "content": prompt}]
+    
+    resp = http_requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers=headers,
+        json={"model": "llama-3.3-70b-versatile", "messages": messages},
+        timeout=60
+    )
+    resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+def save_openai_style_history(uid, session_id, history, prompt, reply):
+    """For Grok/Groq: append user+assistant messages and save in Gemini-compatible format."""
+    new_history = list(history)
+    new_history.append({"role": "user", "parts": [prompt]})
+    new_history.append({"role": "model", "parts": [reply]})
+    
+    if not db or not uid:
+        fallback_sessions[session_id] = new_history
+        return
+    try:
+        doc_ref = db.collection('users').document(uid).collection('chat_sessions').document(session_id)
+        doc_ref.set({
+            'history': new_history,
+            'updated_at': firestore.SERVER_TIMESTAMP
+        }, merge=True)
+    except Exception as e:
+        print(f"Firestore write error (multi-model): {e}")
+        fallback_sessions[session_id] = new_history
+
 def serialize_history(history):
     """Converts Gemini history objects into plain dictionaries for storage."""
     serialized = []
@@ -115,42 +195,57 @@ def chat_api():
         user_prompt = data.get('prompt')
         session_id = data.get('session_id', 'default_session')
         uid = data.get('uid')
+        model_provider = data.get('model', 'gemini')  # Default to gemini
 
-        if not api_key:
-            return jsonify({"error": "Google API Key not found. Please follow the steps in walkthrough.md to generate one."}), 500
-        
         if not user_prompt:
             return jsonify({"error": "Prompt is required"}), 400
 
-        if not uid and db: # If Firebase is active but no UID is provided
+        if not uid and db:
             return jsonify({"error": "User ID (uid) is required for persistent chat sessions."}), 400
 
         # Load history from Firestore or fallback
         history = get_chat_history(uid, session_id)
 
-        # Initialize the chat session with history
-        model = genai.GenerativeModel(active_model)
-        chat = model.start_chat(history=history)
+        # ====== ROUTE TO THE SELECTED MODEL ======
+        if model_provider == 'grok':
+            reply = chat_grok(user_prompt, history)
+            try:
+                save_openai_style_history(uid, session_id, history, user_prompt, reply)
+            except Exception as save_err:
+                print(f"Non-critical history save error: {save_err}")
+            return jsonify({"reply": reply})
 
-        response = chat.send_message(user_prompt)
-        
-        # Save updated history (SAFE WRAPPER)
-        try:
-            save_chat_history(uid, session_id, chat.history)
-        except Exception as save_err:
-             print(f"Non-critical history save error: {save_err}")
-             # We don't crash the whole request if history save fails
+        elif model_provider == 'groq':
+            reply = chat_groq(user_prompt, history)
+            try:
+                save_openai_style_history(uid, session_id, history, user_prompt, reply)
+            except Exception as save_err:
+                print(f"Non-critical history save error: {save_err}")
+            return jsonify({"reply": reply})
 
-        return jsonify({"reply": response.text})
+        else:
+            # ====== GEMINI (DEFAULT — UNTOUCHED LOGIC) ======
+            if not api_key:
+                return jsonify({"error": "Google API Key not found. Please follow the steps in walkthrough.md to generate one."}), 500
+
+            model = genai.GenerativeModel(active_model)
+            chat = model.start_chat(history=history)
+            response = chat.send_message(user_prompt)
+
+            try:
+                save_chat_history(uid, session_id, chat.history)
+            except Exception as save_err:
+                print(f"Non-critical history save error: {save_err}")
+
+            return jsonify({"reply": response.text})
 
     except Exception as e:
         error_msg = str(e)
         print(f"CRITICAL Error in chat_api: {error_msg}")
         traceback.print_exc()
         
-        # Provide a more specific error message if possible
         if "API_KEY_INVALID" in error_msg:
-             return jsonify({"error": "Invalid Google API Key. Please check your Vercel environment variables."}), 500
+            return jsonify({"error": "Invalid Google API Key. Please check your Vercel environment variables."}), 500
         
         return jsonify({"error": f"Backend Error: {error_msg}"}), 500
 

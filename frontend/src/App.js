@@ -20,6 +20,7 @@ function Chat({ user }) {
   const [currentSession, setCurrentSession] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("gemini");
 
   const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen);
 
@@ -65,6 +66,7 @@ function Chat({ user }) {
         prompt: userPrompt,
         session_id: currentSession,
         uid: user.uid,
+        model: selectedModel,
       });
 
       const botReply = res.data.reply || res.data.error || "No response from Gemini.";
@@ -136,10 +138,19 @@ function Chat({ user }) {
 
         {/* Logo Header (Desktop) */}
         <header className="logo-header">
-          <div className="flex-row gap-2" style={{ display: 'flex', alignItems: 'baseline', flex: 1 }}>
+          <div className="flex-row gap-2" style={{ display: 'flex', alignItems: 'center', flex: 1, gap: '1rem' }}>
             <span style={{ fontSize: '1.1rem', fontWeight: '600', color: '#ececec', letterSpacing: '0.5px' }}>ConvoBot</span>
-            <span className="text-sub font-medium" style={{ fontSize: '0.8rem', opacity: 0.5, marginLeft: '0.5rem' }}>v1.0.5-NEON-LIVE</span>
+            <span className="text-sub font-medium" style={{ fontSize: '0.8rem', opacity: 0.5 }}>v1.0.5-NEON-LIVE</span>
           </div>
+          <select
+            value={selectedModel}
+            onChange={(e) => setSelectedModel(e.target.value)}
+            className="model-selector"
+          >
+            <option value="gemini">⚡ Gemini</option>
+            <option value="grok">🧠 Grok</option>
+            <option value="groq">🚀 Groq</option>
+          </select>
         </header>
 
         {/* Chat Window */}
