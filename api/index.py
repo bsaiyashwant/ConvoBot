@@ -69,7 +69,7 @@ print(f"Active Gemini Model: {active_model}")
 # ============================================
 # MULTI-MODEL: Grok (xAI) + Groq Providers
 # ============================================
-GROK_API_KEY = os.getenv("GROK_API_KEY")
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 def convert_history_to_openai(gemini_history):
@@ -86,27 +86,27 @@ def convert_history_to_openai(gemini_history):
         messages.append({"role": role, "content": str(content)})
     return messages
 
-def chat_grok(prompt, history):
-    """Send a chat request to xAI Grok API."""
-    if not GROK_API_KEY:
-        return "Error: Grok API key not configured. Please add GROK_API_KEY to your environment."
+def chat_mistral(prompt, history):
+    """Send a chat request to Mistral AI API."""
+    if not MISTRAL_API_KEY:
+        return "Error: Mistral API key not configured. Please add MISTRAL_API_KEY to your environment."
     
     headers = {
-        "Authorization": f"Bearer {GROK_API_KEY}",
+        "Authorization": f"Bearer {MISTRAL_API_KEY}",
         "Content-Type": "application/json"
     }
     messages = convert_history_to_openai(history) + [{"role": "user", "content": prompt}]
     
     resp = http_requests.post(
-        "https://api.x.ai/v1/chat/completions",
+        "https://api.mistral.ai/v1/chat/completions",
         headers=headers,
-        json={"model": "grok-4-1-fast-non-reasoning", "messages": messages},
+        json={"model": "mistral-small-latest", "messages": messages},
         timeout=60
     )
     if resp.status_code == 403:
-        return "Error: Grok API access denied. Please check your xAI account has billing/credits enabled at console.x.ai."
+        return "Error: Mistral API access denied. Please check your account at console.mistral.ai."
     if resp.status_code == 401:
-        return "Error: Invalid Grok API key. Please check GROK_API_KEY in your environment."
+        return "Error: Invalid Mistral API key. Please check MISTRAL_API_KEY in your environment."
     resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"]
 
@@ -215,8 +215,8 @@ def chat_api():
         history = get_chat_history(uid, session_id)
 
         # ====== ROUTE TO THE SELECTED MODEL ======
-        if model_provider == 'grok':
-            reply = chat_grok(user_prompt, history)
+        if model_provider == 'mistral':
+            reply = chat_mistral(user_prompt, history)
             try:
                 save_openai_style_history(uid, session_id, history, user_prompt, reply)
             except Exception as save_err:

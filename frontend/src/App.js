@@ -21,6 +21,11 @@ function Chat({ user }) {
   const [isTyping, setIsTyping] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState("gemini");
+  const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+  const [chatNames, setChatNames] = useState(() => {
+    const saved = localStorage.getItem(`convobot_chatnames_${user.uid}`);
+    return saved ? JSON.parse(saved) : {};
+  });
 
   const toggleMobileSidebar = () => setIsMobileOpen(!isMobileOpen);
 
@@ -41,8 +46,41 @@ function Chat({ user }) {
     }
   }, [chatSessions, user]);
 
+  useEffect(() => {
+    if (user && user.uid) {
+      localStorage.setItem(`convobot_chatnames_${user.uid}`, JSON.stringify(chatNames));
+    }
+  }, [chatNames, user]);
+
   const switchSession = (id) => {
     setCurrentSession(id);
+  };
+
+  const deleteChat = (id) => {
+    setChatSessions((prev) => {
+      const updated = { ...prev };
+      delete updated[id];
+      return updated;
+    });
+    setChatNames((prev) => {
+      const updated = { ...prev };
+      delete updated[id];
+      return updated;
+    });
+    if (currentSession === id) {
+      const remaining = Object.keys(chatSessions).filter((k) => k !== id);
+      if (remaining.length > 0) {
+        setCurrentSession(remaining[0]);
+      } else {
+        const newId = uuidv4();
+        setCurrentSession(newId);
+        setChatSessions((prev) => ({ ...prev, [newId]: [] }));
+      }
+    }
+  };
+
+  const renameChat = (id, newName) => {
+    setChatNames((prev) => ({ ...prev, [id]: newName }));
   };
 
   const sendMessage = async (presetMessage) => {
@@ -114,9 +152,12 @@ function Chat({ user }) {
     <div className="app-container">
       <Sidebar
         chats={chatSessions}
+        chatNames={chatNames}
         currentId={currentSession}
         switchSession={switchSession}
         onNewChat={newChat}
+        onDeleteChat={deleteChat}
+        onRenameChat={renameChat}
         user={user}
         isMobileOpen={isMobileOpen}
         toggleMobileSidebar={toggleMobileSidebar}
@@ -138,19 +179,43 @@ function Chat({ user }) {
 
         {/* Logo Header (Desktop) */}
         <header className="logo-header">
-          <div className="flex-row gap-2" style={{ display: 'flex', alignItems: 'center', flex: 1, gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: '1rem' }}>
             <span style={{ fontSize: '1.1rem', fontWeight: '600', color: '#ececec', letterSpacing: '0.5px' }}>ConvoBot</span>
-            <span className="text-sub font-medium" style={{ fontSize: '0.8rem', opacity: 0.5 }}>v1.0.5-NEON-LIVE</span>
+            <span style={{ fontSize: '0.8rem', opacity: 0.5, color: '#94a3b8' }}>v2.0</span>
           </div>
-          <select
-            value={selectedModel}
-            onChange={(e) => setSelectedModel(e.target.value)}
-            className="model-selector"
-          >
-            <option value="gemini">⚡ Gemini</option>
-            <option value="grok">🧠 Grok</option>
-            <option value="groq">🚀 Groq</option>
-          </select>
+          <div className="model-dropdown-wrapper">
+            <button className="model-dropdown-trigger" onClick={() => setModelDropdownOpen(!modelDropdownOpen)}>
+              {selectedModel === 'gemini' && (
+                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg" alt="Gemini" className="model-logo" />
+              )}
+              {selectedModel === 'mistral' && (
+                <img src="https://mistral.ai/images/logo_hubc44220e.svg" alt="Mistral" className="model-logo" />
+              )}
+              {selectedModel === 'groq' && (
+                <img src="https://groq.com/wp-content/uploads/2024/03/PBG-mark1-color.svg" alt="Groq" className="model-logo" />
+              )}
+              <span>{selectedModel === 'gemini' ? 'Gemini' : selectedModel === 'mistral' ? 'Mistral' : 'Groq'}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            {modelDropdownOpen && (
+              <div className="model-dropdown-menu">
+                {[{id: 'gemini', name: 'Gemini', desc: 'Google AI', logo: 'https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg'},
+                  {id: 'mistral', name: 'Mistral', desc: 'Mistral AI', logo: 'https://mistral.ai/images/logo_hubc44220e.svg'},
+                  {id: 'groq', name: 'Groq', desc: 'Llama 3.3 70B', logo: 'https://groq.com/wp-content/uploads/2024/03/PBG-mark1-color.svg'}
+                ].map((m) => (
+                  <button key={m.id} className={`model-dropdown-item ${selectedModel === m.id ? 'active' : ''}`}
+                    onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}>
+                    <img src={m.logo} alt={m.name} className="model-logo" />
+                    <div>
+                      <div style={{fontWeight: 600, fontSize: '0.9rem'}}>{m.name}</div>
+                      <div style={{fontSize: '0.75rem', color: '#888'}}>{m.desc}</div>
+                    </div>
+                    {selectedModel === m.id && <span style={{marginLeft: 'auto', color: 'var(--neon-blue)'}}>✓</span>}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </header>
 
         {/* Chat Window */}

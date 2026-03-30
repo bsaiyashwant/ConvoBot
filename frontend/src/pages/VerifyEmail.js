@@ -17,7 +17,7 @@ function VerifyEmail() {
 
                 <h2 style={{ color: '#ececec', fontSize: '1.5rem', fontWeight: '600', marginBottom: '1rem' }}>Check your email</h2>
                 <p style={{ color: '#ccc', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '2rem' }}>
-                    We sent a verification link to your email address. Please click the link inside to verify your account and start chatting.
+                    We sent a verification link to your email address. Please click the link inside to verify your account and start using ConvoBot. Your study partner.
                 </p>
 
                 <button
