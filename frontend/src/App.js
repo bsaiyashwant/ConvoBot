@@ -186,26 +186,29 @@ function Chat({ user }) {
           <div className="model-dropdown-wrapper">
             <button className="model-dropdown-trigger" onClick={() => setModelDropdownOpen(!modelDropdownOpen)}>
               {selectedModel === 'gemini' && (
-                <img src="https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg" alt="Gemini" className="model-logo" />
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="#4285F4"/></svg>
               )}
               {selectedModel === 'mistral' && (
-                <img src="https://mistral.ai/images/logo_hubc44220e.svg" alt="Mistral" className="model-logo" />
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="6" height="6" fill="#FF7000"/><rect x="9" y="2" width="6" height="6" fill="#FF7000"/><rect x="16" y="2" width="6" height="6" fill="#FF7000"/><rect x="2" y="9" width="6" height="6" fill="#FF7000"/><rect x="16" y="9" width="6" height="6" fill="#FF7000"/><rect x="2" y="16" width="6" height="6" fill="#FF7000"/><rect x="9" y="16" width="6" height="6" fill="#FF7000"/><rect x="16" y="16" width="6" height="6" fill="#FF7000"/></svg>
               )}
               {selectedModel === 'groq' && (
-                <img src="https://groq.com/wp-content/uploads/2024/03/PBG-mark1-color.svg" alt="Groq" className="model-logo" />
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#F55036" strokeWidth="2.5" fill="none"/><path d="M12 6v8l4 4" stroke="#F55036" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
               )}
               <span>{selectedModel === 'gemini' ? 'Gemini' : selectedModel === 'mistral' ? 'Mistral' : 'Groq'}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
             </button>
             {modelDropdownOpen && (
               <div className="model-dropdown-menu">
-                {[{id: 'gemini', name: 'Gemini', desc: 'Google AI', logo: 'https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690b6.svg'},
-                  {id: 'mistral', name: 'Mistral', desc: 'Mistral AI', logo: 'https://mistral.ai/images/logo_hubc44220e.svg'},
-                  {id: 'groq', name: 'Groq', desc: 'Llama 3.3 70B', logo: 'https://groq.com/wp-content/uploads/2024/03/PBG-mark1-color.svg'}
+                {[
+                  {id: 'gemini', name: 'Gemini', desc: 'Google AI', color: '#4285F4', icon: 'sparkle'},
+                  {id: 'mistral', name: 'Mistral', desc: 'Mistral AI', color: '#FF7000', icon: 'mistral'},
+                  {id: 'groq', name: 'Groq', desc: 'Llama 3.3 70B', color: '#F55036', icon: 'groq'}
                 ].map((m) => (
                   <button key={m.id} className={`model-dropdown-item ${selectedModel === m.id ? 'active' : ''}`}
                     onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}>
-                    <img src={m.logo} alt={m.name} className="model-logo" />
+                    {m.icon === 'sparkle' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill={m.color}/></svg>}
+                    {m.icon === 'mistral' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="6" height="6" fill={m.color}/><rect x="9" y="2" width="6" height="6" fill={m.color}/><rect x="16" y="2" width="6" height="6" fill={m.color}/><rect x="2" y="9" width="6" height="6" fill={m.color}/><rect x="16" y="9" width="6" height="6" fill={m.color}/><rect x="2" y="16" width="6" height="6" fill={m.color}/><rect x="9" y="16" width="6" height="6" fill={m.color}/><rect x="16" y="16" width="6" height="6" fill={m.color}/></svg>}
+                    {m.icon === 'groq' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke={m.color} strokeWidth="2.5" fill="none"/><path d="M12 6v8l4 4" stroke={m.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                     <div>
                       <div style={{fontWeight: 600, fontSize: '0.9rem'}}>{m.name}</div>
                       <div style={{fontSize: '0.75rem', color: '#888'}}>{m.desc}</div>
