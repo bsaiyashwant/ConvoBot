@@ -100,9 +100,13 @@ def chat_grok(prompt, history):
     resp = http_requests.post(
         "https://api.x.ai/v1/chat/completions",
         headers=headers,
-        json={"model": "grok-3-mini", "messages": messages},
+        json={"model": "grok-4-1-fast-non-reasoning", "messages": messages},
         timeout=60
     )
+    if resp.status_code == 403:
+        return "Error: Grok API access denied. Please check your xAI account has billing/credits enabled at console.x.ai."
+    if resp.status_code == 401:
+        return "Error: Invalid Grok API key. Please check GROK_API_KEY in your environment."
     resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"]
 
@@ -123,6 +127,10 @@ def chat_groq(prompt, history):
         json={"model": "llama-3.3-70b-versatile", "messages": messages},
         timeout=60
     )
+    if resp.status_code == 403:
+        return "Error: Groq API access denied. Please check your Groq account at console.groq.com."
+    if resp.status_code == 401:
+        return "Error: Invalid Groq API key. Please check GROQ_API_KEY in your environment."
     resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"]
 
