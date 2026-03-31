@@ -9,7 +9,7 @@
 
 ## ✨ Features
 - **Sleek UI**
-- **Persistent Chat History**: Conversations are securely saved to Firebase Firestore, allowing you to pick up right where you left off.
+- **Persistent Chat History**: Conversations are securely saved allowing you to pick up right where you left off.
 - **Secure Authentication**: Integrated Email/Password and Google Sign-In.
 - **Cross-Platform**: Fully responsive design that works on mobile and desktop.
 - **24/7 Availability**
