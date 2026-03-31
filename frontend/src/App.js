@@ -227,6 +227,7 @@ function Chat({ user }) {
             messages={chatSessions[currentSession] || []}
             isTyping={isTyping}
             onSuggestionClick={sendMessage}
+            chatTitle={chatNames[currentSession] || (chatSessions[currentSession]?.[0]?.user) || "ConvoBot Chat"}
           />
         </div>
 
