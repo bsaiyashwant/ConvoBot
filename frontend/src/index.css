@@ -900,46 +900,43 @@ body {
 /* ==========================================
    PDF DOWNLOAD BUTTONS
    ========================================== */
-.pdf-download-bar {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0;
-  margin-bottom: -1rem;
-}
-
-.pdf-download-full-btn {
+.header-pdf-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.55rem 1.1rem;
-  background: linear-gradient(135deg, rgba(66, 133, 244, 0.15), rgba(168, 85, 247, 0.12));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(66, 133, 244, 0.25);
-  border-radius: 12px;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
   color: #93c5fd;
   font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  letter-spacing: 0.02em;
+  margin-left: 0.5rem;
+  white-space: nowrap;
 }
 
-.pdf-download-full-btn:hover {
-  background: linear-gradient(135deg, rgba(66, 133, 244, 0.3), rgba(168, 85, 247, 0.22));
+.header-pdf-btn:hover:not(:disabled) {
   border-color: var(--neon-blue);
-  box-shadow: 0 0 20px rgba(66, 133, 244, 0.2), 0 4px 15px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
+  background: rgba(66, 133, 244, 0.12);
+  box-shadow: 0 0 15px rgba(66, 133, 244, 0.15);
   color: #bfdbfe;
+  transform: translateY(-1px);
 }
 
-.pdf-download-full-btn:active {
+.header-pdf-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.pdf-download-full-btn svg {
+.header-pdf-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.header-pdf-btn svg {
   flex-shrink: 0;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
 .pdf-single-btn {
@@ -1047,17 +1044,11 @@ body {
     margin: 0 0.75rem;
   }
 
-  .pdf-download-full-btn {
-    font-size: 0.75rem;
-    padding: 0.45rem 0.9rem;
-  }
-
-  .pdf-download-full-btn span {
+  .header-pdf-btn span {
     display: none;
   }
 
-  .pdf-download-full-btn::after {
-    content: 'PDF';
-    font-weight: 600;
+  .header-pdf-btn {
+    padding: 0.4rem 0.5rem;
   }
 }
