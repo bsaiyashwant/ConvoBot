@@ -24,5 +24,4 @@ Built with ❤️ by the **podmAAn** team
 ---
 
 ## 📄 License
-
-This project is built for educational purposes. 
+© 2026 Team podmAAn. Built for education, driven by passion.
