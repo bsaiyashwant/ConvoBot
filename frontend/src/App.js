@@ -175,7 +175,63 @@ function Chat({ user }) {
             </svg>
           </button>
           <img src="/convobot_logo_final.png" alt="ConvoBot" className="mobile-logo-img" />
-          <div style={{ width: '24px' }}></div> {/* Spacer */}
+          <div className="mobile-header-actions">
+            {/* Mobile Model Selector */}
+            <div className="model-dropdown-wrapper">
+              <button className="model-dropdown-trigger mobile-model-trigger" onClick={() => setModelDropdownOpen(!modelDropdownOpen)}>
+                {selectedModel === 'gemini' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill="#4285F4"/></svg>
+                )}
+                {selectedModel === 'mistral' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="6" height="6" fill="#FF7000"/><rect x="9" y="2" width="6" height="6" fill="#FF7000"/><rect x="16" y="2" width="6" height="6" fill="#FF7000"/><rect x="2" y="9" width="6" height="6" fill="#FF7000"/><rect x="16" y="9" width="6" height="6" fill="#FF7000"/><rect x="2" y="16" width="6" height="6" fill="#FF7000"/><rect x="9" y="16" width="6" height="6" fill="#FF7000"/><rect x="16" y="16" width="6" height="6" fill="#FF7000"/></svg>
+                )}
+                {selectedModel === 'groq' && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#F55036" strokeWidth="2.5" fill="none"/><path d="M12 6v8l4 4" stroke="#F55036" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                )}
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              {modelDropdownOpen && (
+                <div className="model-dropdown-menu">
+                  {[
+                    {id: 'gemini', name: 'Gemini', desc: 'Google AI', color: '#4285F4', icon: 'sparkle'},
+                    {id: 'mistral', name: 'Mistral', desc: 'Mistral AI', color: '#FF7000', icon: 'mistral'},
+                    {id: 'groq', name: 'Groq', desc: 'Llama 3.3 70B', color: '#F55036', icon: 'groq'}
+                  ].map((m) => (
+                    <button key={m.id} className={`model-dropdown-item ${selectedModel === m.id ? 'active' : ''}`}
+                      onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}>
+                      {m.icon === 'sparkle' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" fill={m.color}/></svg>}
+                      {m.icon === 'mistral' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="6" height="6" fill={m.color}/><rect x="9" y="2" width="6" height="6" fill={m.color}/><rect x="16" y="2" width="6" height="6" fill={m.color}/><rect x="2" y="9" width="6" height="6" fill={m.color}/><rect x="16" y="9" width="6" height="6" fill={m.color}/><rect x="2" y="16" width="6" height="6" fill={m.color}/><rect x="9" y="16" width="6" height="6" fill={m.color}/><rect x="16" y="16" width="6" height="6" fill={m.color}/></svg>}
+                      {m.icon === 'groq' && <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke={m.color} strokeWidth="2.5" fill="none"/><path d="M12 6v8l4 4" stroke={m.color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                      <div>
+                        <div style={{fontWeight: 600, fontSize: '0.9rem'}}>{m.name}</div>
+                        <div style={{fontSize: '0.75rem', color: '#888'}}>{m.desc}</div>
+                      </div>
+                      {selectedModel === m.id && <span style={{marginLeft: 'auto', color: 'var(--neon-blue)'}}>✓</span>}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* Mobile PDF Button */}
+            <button
+              className="header-pdf-btn"
+              onClick={() => {
+                const msgs = (chatSessions[currentSession] || []).filter(m => m.bot && m.bot !== "...");
+                const title = chatNames[currentSession] || (chatSessions[currentSession]?.[0]?.user) || "ConvoBot Chat";
+                if (msgs.length === 0) return;
+                downloadChatAsPDF(msgs, title);
+              }}
+              disabled={!(chatSessions[currentSession] || []).some(m => m.bot && m.bot !== "...")}
+              title="Download chat as PDF"
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="12" y1="18" x2="12" y2="12"></line>
+                <polyline points="9 15 12 18 15 15"></polyline>
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Logo Header (Desktop) */}

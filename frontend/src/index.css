@@ -227,9 +227,10 @@ body {
     padding: 0.75rem 1rem;
     background-color: var(--bg-sidebar);
     border-bottom: 1px solid var(--glass-border);
-    height: 60px;
+    height: 56px;
     width: 100%;
     z-index: 100;
+    gap: 0.5rem;
   }
 }
 
@@ -752,8 +753,26 @@ body {
 
 /* Mobile Logo */
 .mobile-logo-img {
-  height: 32px;
+  height: 44px;
   width: auto;
+  flex-shrink: 0;
+}
+
+.mobile-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.mobile-model-trigger {
+  padding: 0.35rem 0.5rem !important;
+  gap: 0.3rem !important;
+  font-size: 0 !important;
+}
+
+.mobile-model-trigger span {
+  display: none;
 }
 
 /* Markdown Body */
