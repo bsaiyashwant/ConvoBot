@@ -209,6 +209,10 @@ function Chat({ user }) {
                       {selectedModel === m.id && <span style={{marginLeft: 'auto', color: 'var(--neon-blue)'}}>✓</span>}
                     </button>
                   ))}
+                  <div className="model-dropdown-tips">
+                    <p>⚡ Gemini uses premium credits — use it wisely.</p>
+                    <p>🚀 Groq & Mistral excel at deep explanations and complex coding.</p>
+                  </div>
                 </div>
               )}
             </div>
@@ -273,6 +277,10 @@ function Chat({ user }) {
                     {selectedModel === m.id && <span style={{marginLeft: 'auto', color: 'var(--neon-blue)'}}>✓</span>}
                   </button>
                 ))}
+                <div className="model-dropdown-tips">
+                  <p>⚡ Gemini uses premium credits — use it wisely.</p>
+                  <p>🚀 Groq & Mistral excel at deep explanations and complex coding.</p>
+                </div>
               </div>
             )}
           </div>

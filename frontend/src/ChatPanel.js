@@ -44,6 +44,17 @@ function ChatPanel({ messages, isTyping, onSuggestionClick, chatTitle }) {
               <p>Get tips on how to improve your academic writing.</p>
             </div>
           </div>
+
+          <div className="model-tips-banner">
+            <div className="model-tip">
+              <span className="tip-icon">⚡</span>
+              <span>Gemini runs on premium credits — use it thoughtfully for the best results.</span>
+            </div>
+            <div className="model-tip">
+              <span className="tip-icon">🚀</span>
+              <span>Switch to Groq or Mistral for in-depth explanations, deep learning, and complex coding tasks.</span>
+            </div>
+          </div>
         </div>
       ) : (
         <>

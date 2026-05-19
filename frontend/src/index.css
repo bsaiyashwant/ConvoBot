@@ -547,6 +547,54 @@ body {
   border: 1px solid rgba(66, 133, 244, 0.2);
 }
 
+/* Model Tips in Dropdown */
+.model-dropdown-tips {
+  padding: 0.5rem 0.75rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.model-dropdown-tips p {
+  font-size: 0.68rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0.2rem 0;
+}
+
+/* Model Tips Banner (Greeting Screen) */
+.model-tips-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 2.5rem;
+  max-width: 560px;
+  width: 100%;
+}
+
+.model-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  line-height: 1.45;
+  transition: all 0.3s ease;
+}
+
+.model-tip:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.tip-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
 /* ==========================================
    CHAT ITEM MANAGEMENT (Delete / Rename)
    ========================================== */
