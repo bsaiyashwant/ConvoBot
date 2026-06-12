@@ -2,8 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// These will be securely loaded from Vercel / local .env file
-// The user will need to provide these from their Firebase Project Settings.
+// Firebase Configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDCbrgI2szWHYlcH_JzciQs7EE66WWX2ro",
     authDomain: "convobot-1ef8f.firebaseapp.com",

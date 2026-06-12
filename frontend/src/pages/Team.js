@@ -23,6 +23,13 @@ const teamMembers = [
         linkedin: "https://www.linkedin.com/in/ritesh-devineni-aba96b286/",
         image: "/ritesh_photo.png",
         isLead: false
+    },
+    {
+        name: "Mattam Venkata Sesha Bharat",
+        role: "UI/UX Designer & Researcher",
+        linkedin: "https://www.linkedin.com/in/mattam-venkata-sesha-bharat-371218299",
+        image: "/bharat_photo.png",
+        isLead: false
     }
 ];
 
