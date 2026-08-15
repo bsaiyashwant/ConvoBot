@@ -195,7 +195,7 @@ function Chat({ user }) {
                   {[
                     {id: 'gemini', name: 'Gemini', desc: 'Google AI', color: '#4285F4', icon: 'sparkle'},
                     {id: 'mistral', name: 'Mistral', desc: 'Mistral AI', color: '#FF7000', icon: 'mistral'},
-                    {id: 'groq', name: 'Groq', desc: 'Llama 3.3 70B', color: '#F55036', icon: 'groq'}
+                    {id: 'groq', name: 'Groq', desc: 'Qwen3.6 27B', color: '#F55036', icon: 'groq'}
                   ].map((m) => (
                     <button key={m.id} className={`model-dropdown-item ${selectedModel === m.id ? 'active' : ''}`}
                       onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}>
@@ -263,7 +263,7 @@ function Chat({ user }) {
                 {[
                   {id: 'gemini', name: 'Gemini', desc: 'Google AI', color: '#4285F4', icon: 'sparkle'},
                   {id: 'mistral', name: 'Mistral', desc: 'Mistral AI', color: '#FF7000', icon: 'mistral'},
-                  {id: 'groq', name: 'Groq', desc: 'Llama 3.3 70B', color: '#F55036', icon: 'groq'}
+                  {id: 'groq', name: 'Groq', desc: 'Qwen3.6 27B', color: '#F55036', icon: 'groq'}
                 ].map((m) => (
                   <button key={m.id} className={`model-dropdown-item ${selectedModel === m.id ? 'active' : ''}`}
                     onClick={() => { setSelectedModel(m.id); setModelDropdownOpen(false); }}>
