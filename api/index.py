@@ -124,7 +124,7 @@ def chat_groq(prompt, history):
     resp = http_requests.post(
         "https://api.groq.com/openai/v1/chat/completions",
         headers=headers,
-        json={"model": "llama-3.3-70b-versatile", "messages": messages},
+        json={"model": "qwen/qwen3.6-27b", "messages": messages},
         timeout=60
     )
     if resp.status_code == 403:
