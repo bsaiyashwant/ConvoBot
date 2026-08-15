@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import traceback
+import re
 import json
 import firebase_admin
 from firebase_admin import credentials, firestore
@@ -132,7 +133,10 @@ def chat_groq(prompt, history):
     if resp.status_code == 401:
         return "Error: Invalid Groq API key. Please check GROQ_API_KEY in your environment."
     resp.raise_for_status()
-    return resp.json()["choices"][0]["message"]["content"]
+    reply = resp.json()["choices"][0]["message"]["content"]
+    # Strip <think>...</think> reasoning block from Qwen3.6 thinking mode
+    reply = re.sub(r'<think>.*?</think>', '', reply, flags=re.DOTALL).strip()
+    return reply
 
 def save_openai_style_history(uid, session_id, history, prompt, reply):
     """For Grok/Groq: append user+assistant messages and save in Gemini-compatible format."""
