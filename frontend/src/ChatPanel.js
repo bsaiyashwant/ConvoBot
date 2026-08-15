@@ -2,6 +2,11 @@ import React, { useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { downloadChatAsPDF } from "./pdfExport";
+import SplitText from './components/reactbits/SplitText';
+import RotatingText from './components/reactbits/RotatingText';
+import GradientText from './components/reactbits/GradientText';
+import SpotlightCard from './components/reactbits/SpotlightCard';
+import DecryptedText from './components/reactbits/DecryptedText';
 
 function ChatPanel({ messages, isTyping, onSuggestionClick, chatTitle }) {
   const scrollRef = useRef(null);
@@ -24,25 +29,68 @@ function ChatPanel({ messages, isTyping, onSuggestionClick, chatTitle }) {
       {messages.length === 0 ? (
         <div className="greeting-container animate-in">
           <img src="/convobot_logo_final.png" alt="ConvoBot" className="greeting-logo" />
-          <h1 className="greeting-text">How can I help you study today?</h1>
+          <h1 className="greeting-text">
+            <SplitText
+              text="How can I help you"
+              className="greeting-split"
+              delay={50}
+              animationFrom={{ opacity: 0, transform: 'translate3d(0,30px,0)' }}
+              animationTo={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+              threshold={0.1}
+              rootMargin="0px"
+            />
+            {' '}
+            <GradientText
+              colors={['#4285F4', '#c678dd', '#4285F4', '#c678dd']}
+              animationSpeed={4}
+              className="greeting-gradient-word"
+            >
+              <RotatingText
+                texts={['study', 'learn', 'practice', 'master']}
+                rotationInterval={2500}
+                staggerDuration={0.03}
+                staggerFrom="first"
+                mainClassName="greeting-rotating"
+                transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+              />
+            </GradientText>
+            {' '}
+            <SplitText
+              text="today?"
+              className="greeting-split"
+              delay={50}
+              animationFrom={{ opacity: 0, transform: 'translate3d(0,30px,0)' }}
+              animationTo={{ opacity: 1, transform: 'translate3d(0,0,0)' }}
+              threshold={0.1}
+              rootMargin="0px"
+            />
+          </h1>
 
           <div className="suggestion-grid">
-            <div className="suggestion-card" onClick={() => onSuggestionClick("Summarize my notes: ")}>
-              <h3>📑 Summarize Notes</h3>
-              <p>Turn long chapters into brief, effective study points.</p>
-            </div>
-            <div className="suggestion-card" onClick={() => onSuggestionClick("Explain a complex science concept simply.")}>
-              <h3>🧪 Explain Science</h3>
-              <p>Break down complex formulas and concepts simply.</p>
-            </div>
-            <div className="suggestion-card" onClick={() => onSuggestionClick("Generate a practice quiz to test my knowledge.")}>
-              <h3>🧠 Practice Quiz</h3>
-              <p>Generate questions to test your knowledge.</p>
-            </div>
-            <div className="suggestion-card" onClick={() => onSuggestionClick("Can you provide tips on how to improve my academic writing?")}>
-              <h3>✍️ Essay Feedback</h3>
-              <p>Get tips on how to improve your academic writing.</p>
-            </div>
+            <SpotlightCard className="suggestion-card" spotlightColor="rgba(66, 133, 244, 0.15)">
+              <div onClick={() => onSuggestionClick("Summarize my notes: ")} style={{cursor: 'pointer'}}>
+                <h3>📑 Summarize Notes</h3>
+                <p>Turn long chapters into brief, effective study points.</p>
+              </div>
+            </SpotlightCard>
+            <SpotlightCard className="suggestion-card" spotlightColor="rgba(198, 120, 221, 0.15)">
+              <div onClick={() => onSuggestionClick("Explain a complex science concept simply.")} style={{cursor: 'pointer'}}>
+                <h3>🧪 Explain Science</h3>
+                <p>Break down complex formulas and concepts simply.</p>
+              </div>
+            </SpotlightCard>
+            <SpotlightCard className="suggestion-card" spotlightColor="rgba(66, 133, 244, 0.15)">
+              <div onClick={() => onSuggestionClick("Generate a practice quiz to test my knowledge.")} style={{cursor: 'pointer'}}>
+                <h3>🧠 Practice Quiz</h3>
+                <p>Generate questions to test your knowledge.</p>
+              </div>
+            </SpotlightCard>
+            <SpotlightCard className="suggestion-card" spotlightColor="rgba(198, 120, 221, 0.15)">
+              <div onClick={() => onSuggestionClick("Can you provide tips on how to improve my academic writing?")} style={{cursor: 'pointer'}}>
+                <h3>✍️ Essay Feedback</h3>
+                <p>Get tips on how to improve your academic writing.</p>
+              </div>
+            </SpotlightCard>
           </div>
 
           <div className="model-tips-banner">
@@ -72,7 +120,18 @@ function ChatPanel({ messages, isTyping, onSuggestionClick, chatTitle }) {
                   <div className="bot-avatar-circle">
                     <img src="/bot_response_logo.png" alt="" className="bot-avatar-img" />
                   </div>
-                  <span className="bot-name">ConvoBot</span>
+                  <span className="bot-name">
+                    <DecryptedText
+                      text="CONVOBOT"
+                      speed={60}
+                      maxIterations={15}
+                      sequential={true}
+                      revealDirection="start"
+                      animateOn="view"
+                      className="bot-name-revealed"
+                      encryptedClassName="bot-name-encrypted"
+                    />
+                  </span>
                 </div>
 
                 <div className="bot-content markdown-body">

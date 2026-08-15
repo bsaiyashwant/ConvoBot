@@ -1,0 +1,11 @@
+.spotlight-card {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+}
+.spotlight-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.5s ease;
+}

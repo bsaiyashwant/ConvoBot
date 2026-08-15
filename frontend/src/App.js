@@ -11,6 +11,8 @@ import Team from "./pages/Team";
 import { auth } from "./firebaseClient";
 import { onAuthStateChanged } from "firebase/auth";
 import { downloadChatAsPDF } from "./pdfExport";
+import ShinyText from './components/reactbits/ShinyText';
+import ClickSpark from './components/reactbits/ClickSpark';
 
 function Chat({ user }) {
   const [input, setInput] = useState("");
@@ -241,7 +243,7 @@ function Chat({ user }) {
         {/* Logo Header (Desktop) */}
         <header className="logo-header">
           <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: '1rem' }}>
-            <span style={{ fontSize: '1.1rem', fontWeight: '600', color: '#ececec', letterSpacing: '0.5px' }}>ConvoBot</span>
+            <ShinyText text="ConvoBot" speed={3} className="header-shiny-text" />
             <span style={{ fontSize: '0.8rem', opacity: 0.5, color: '#94a3b8' }}>v2.0</span>
           </div>
           <div className="model-dropdown-wrapper">
@@ -330,6 +332,7 @@ function Chat({ user }) {
                 placeholder="Message ConvoBot..."
                 disabled={isTyping}
               />
+              <ClickSpark sparkColor="#4285F4" sparkSize={8} sparkRadius={15} sparkCount={6} duration={400}>
               <button
                 onClick={sendMessage}
                 disabled={isTyping || !input.trim()}
@@ -343,6 +346,7 @@ function Chat({ user }) {
                   </svg>
                 )}
               </button>
+              </ClickSpark>
             </div>
             <p style={{ textAlign: 'center', fontSize: '0.75rem', marginTop: '1rem', color: '#676767', letterSpacing: '0.3px' }}>
               Made with ❤️ by team <button onClick={() => window.location.href = '/team'} style={{ background: 'none', border: 'none', color: '#4285f4', padding: 0, cursor: 'pointer', textDecoration: 'underline', fontSize: 'inherit' }}>podmAAn</button>

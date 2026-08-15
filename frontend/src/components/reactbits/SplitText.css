@@ -1,0 +1,7 @@
+.split-parent {
+  overflow: hidden;
+  display: inline-block;
+}
+.letter {
+  display: inline-block;
+}

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { auth } from "./firebaseClient";
 import { signOut } from "firebase/auth";
+import ClickSpark from './components/reactbits/ClickSpark';
 
 function Sidebar({ chats, chatNames, currentId, switchSession, onNewChat, onDeleteChat, onRenameChat, user, isMobileOpen, toggleMobileSidebar }) {
   const [showMenu, setShowMenu] = useState(false);
@@ -70,6 +71,7 @@ function Sidebar({ chats, chatNames, currentId, switchSession, onNewChat, onDele
 
         {/* New Chat Button */}
         <div className="new-chat-container">
+          <ClickSpark sparkColor="#4285F4" sparkSize={10} sparkRadius={20} sparkCount={8} duration={500}>
           <button onClick={onNewChat} className="new-chat-trigger">
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div className="new-chat-icon-wrapper">
@@ -85,6 +87,7 @@ function Sidebar({ chats, chatNames, currentId, switchSession, onNewChat, onDele
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
           </button>
+          </ClickSpark>
         </div>
 
         {/* Navigation / History */}
@@ -115,6 +118,7 @@ function Sidebar({ chats, chatNames, currentId, switchSession, onNewChat, onDele
                   </div>
                 ) : (
                   <button
+                    style={{ animationDelay: `${Object.keys(chats).indexOf(id) * 0.05}s` }}
                     onClick={() => {
                       switchSession(id);
                       if (window.innerWidth <= 768) toggleMobileSidebar();

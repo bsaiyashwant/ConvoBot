@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { auth, googleProvider } from '../firebaseClient';
 import { signInWithEmailAndPassword, signInWithPopup, sendEmailVerification } from 'firebase/auth';
 import { Link, useNavigate } from 'react-router-dom';
+import SplitText from '../components/reactbits/SplitText';
+import BlurText from '../components/reactbits/BlurText';
+import SpotlightCard from '../components/reactbits/SpotlightCard';
+import ClickSpark from '../components/reactbits/ClickSpark';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -80,11 +84,13 @@ function Login() {
 
     return (
         <div className="app-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="auth-card">
+            <SpotlightCard className="auth-card" spotlightColor="rgba(66, 133, 244, 0.12)">
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <img src="/convobot_logo_final.png" alt="ConvoBot" style={{ height: '60px', marginBottom: '1rem' }} />
-                    <h2 style={{ color: '#ececec', fontSize: '1.5rem', fontWeight: '600' }}>Welcome Back</h2>
-                    <p style={{ color: '#aaa', fontSize: '0.9rem', marginTop: '0.5rem' }}>Sign in to continue to ConvoBot</p>
+                    <h2 style={{ color: '#ececec', fontSize: '1.5rem', fontWeight: '600' }}>
+                      <SplitText text="Welcome Back" delay={60} animationFrom={{ opacity: 0, transform: 'translate3d(0,20px,0)' }} animationTo={{ opacity: 1, transform: 'translate3d(0,0,0)' }} threshold={0.1} rootMargin="0px" />
+                    </h2>
+                    <BlurText text="Sign in to continue to ConvoBot" delay={100} animateBy="words" direction="top" className="auth-blur-subtitle" />
                 </div>
 
                 {error && (
@@ -122,9 +128,11 @@ function Login() {
                             required
                         />
                     </div>
+                    <ClickSpark sparkColor="#4285F4" sparkSize={8} sparkRadius={15} sparkCount={6} duration={400}>
                     <button type="submit" disabled={loading} className="auth-btn-primary">
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
+                    </ClickSpark>
                 </form>
 
                 <div style={{ display: 'flex', alignItems: 'center', margin: '1.5rem 0' }}>
@@ -146,7 +154,7 @@ function Login() {
                 <p style={{ textAlign: 'center', marginTop: '1.5rem', color: '#aaa', fontSize: '0.9rem' }}>
                     Don't have an account? <Link to="/signup" style={{ color: '#ececec', textDecoration: 'underline' }}>Sign up</Link>
                 </p>
-            </div>
+            </SpotlightCard>
         </div>
     );
 }
